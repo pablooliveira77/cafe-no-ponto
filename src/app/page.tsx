@@ -49,7 +49,6 @@ export default function Home() {
   }, []);
 
   const addCarrinho = (id_cafe: number, nome: string, preco: number) => {
-    // Adicionando o item ao carrinho
     setCarrinho((carrinho) => {
       const item_existente = carrinho.find((item) => item.id_cafe === id_cafe);
       if (item_existente) {
@@ -63,7 +62,6 @@ export default function Home() {
       }
     });
 
-    // Adicionar o carrinho no localstorage para persistir os dados
     localStorage.setItem(
       "carrinho",
       JSON.stringify([...carrinho, { id_cafe, nome, preco, quantidade: 1 }])
@@ -81,7 +79,6 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className="py-2 bg-white shadow-lg rounded-lg">
-          {/* Renderizando as abas */}
           <div className="flex justify-around mb-2 border-b-2 border-gray-200">
             <button
               className={`px-4 py-2 text-lg font-semibold ${
