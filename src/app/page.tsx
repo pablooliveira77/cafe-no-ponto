@@ -8,11 +8,8 @@ import styles from "./page.module.css";
 import { cafe } from "../app/content";
 import { useState, useEffect } from "react";
 
-// Definindo a função Home
 export default function Home() {
-  // Definindo o estado da aba ativa
   const [activeTab, setActiveTab] = useState(0);
-  // Definindo o estado do café selecionado, array vazio com campos id, nome, preco e quantidade
   const [carrinho, setCarrinho] = useState<
     { id_cafe: number; nome: string; preco: number; quantidade: number }[]
   >([]);
