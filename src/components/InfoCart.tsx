@@ -12,17 +12,6 @@ interface InfoCartProps {
   setCarrinho: (carrinho: carrinho[]) => void;
 }
 
-interface CarrinhoItem {
-  id_cafe: number;
-  nome: string;
-  descricao: string;
-  tipo: string;
-  tamanho: string;
-  imagem: string;
-  preco: number;
-  quantidade: number;
-}
-
 export default function InfoCart({ carrinho, setCarrinho }: InfoCartProps) {
   const atualizarCarrinho = (id_cafe: number) => {
     setCarrinho(
