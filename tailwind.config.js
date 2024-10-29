@@ -7,7 +7,11 @@ module.exports = {
   ],
 
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        coffe: '#b37c59',
+      }
+    },
   },
   plugins: [],
 }
