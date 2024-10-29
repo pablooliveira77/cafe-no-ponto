@@ -3,7 +3,6 @@
 import ProductsInitial from "@/components/Products";
 import ListPedido from "@/components/ListPedidos";
 import InfoCart from "@/components/InfoCart";
-// import Image from "next/image";
 import styles from "./page.module.css";
 import { cafe } from "../app/content";
 import { useState, useEffect } from "react";
@@ -16,15 +15,12 @@ export default function Home() {
   const [alerta, setAlerta] = useState<string | null>(null);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
-  // Função para carregar o carrinho do localstorage
   useEffect(() => {
     const carrinhoLocalstorage = JSON.parse(
       localStorage.getItem("carrinho") || "[]"
     );
 
-    // Verifica se o carrinho já existe no localStorage
     if (carrinhoLocalstorage.length > 0) {
-      // Verifica se há itens duplicados e atualiza as quantidades
       const novoCarrinho: {
         id_cafe: number;
         nome: string;
