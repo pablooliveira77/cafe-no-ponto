@@ -1,0 +1,29 @@
+// app/api/auth/callback/route.js
+
+import { NextResponse } from 'next/server';
+import { getAccessTokenFromCode } from '@/utils/auth';
+import { codeVerifier, codeChallenge } from '@/utils/authCodeVerifier';
+localStorage.setItem('code_verifier', codeVerifier);
+
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  console.log('1º',codeVerifier, codeChallenge)
+  console.log(searchParams.get('code'));
+  console.log(searchParams.get('state'));
+  const codeVerifier = localStorage.getItem('code_verifier');
+  const code = searchParams.get('code');
+  const state = searchParams.get('state');
+
+
+  try {
+    const tokens = await getAccessTokenFromCode(code,codeVerifier);
+
+    // Armazenar os tokens conforme necessário (exemplo: em um cookie ou banco de dados)
+    // ...
+
+    return NextResponse.json({ tokens });
+  } catch (error) {
+    console.error('rota final', error);
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 });
+  }
+}

@@ -69,9 +69,9 @@ export const pedido = [
     status_pedido: "concluido",
     valor_pedido: 12,
     is_assinatura: false,
-    fk_id_barman: 1,
+    fk_id_barman: "auth0|672a206b620fc2be082a8c27",
     fk_id_entregador: 2,
-    fk_id_cliente: 1,
+    fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
     fk_id_cafe: 1,
     fk_id_assinatura: null,
     created_at: "2024-10-04T07:55:00",
@@ -84,8 +84,8 @@ export const pedido = [
     valor_pedido: 10,
     is_assinatura: false,
     fk_id_barman: 2,
-    fk_id_entregador: 1,
-    fk_id_cliente: 2,
+    fk_id_entregador: "auth0|672a22e5620fc2be082a8db8",
+    fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
     fk_id_cafe: 2,
     fk_id_assinatura: null,
     created_at: "2024-10-04T08:55:00",
@@ -99,7 +99,7 @@ export const pedido = [
     is_assinatura: true,
     fk_id_barman: 3,
     fk_id_entregador: 3,
-    fk_id_cliente: 3,
+    fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
     fk_id_cafe: 3,
     fk_id_assinatura: 1,
     created_at: "2024-10-04T09:55:00",
@@ -108,18 +108,18 @@ export const pedido = [
 
 export const cliente = [
   {
-    id_cliente: 1,
-    nome: "João Silva",
-    numero: "555-1234",
-    email: "joao.silva@example.com",
+    id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
+    nome: "Pablo",
+    numero: "5561991936667",
+    email: "pablolimadeoliveira77@gmail.com",
     endereco_entrega: "Rua A, 123",
     created_at: "2024-09-01T08:00:00",
   },
   {
-    id_cliente: 2,
-    nome: "Ana Costa",
-    numero: "555-5678",
-    email: "ana.costa@example.com",
+    id_cliente: "auth0|672a117751b32fa42c7d1983",
+    nome: "pablo cliente",
+    numero: "5561991936667",
+    email: "pablo.oliveira77@outlook.com.br",
     endereco_entrega: "Rua B, 456",
     created_at: "2024-09-05T09:00:00",
   },
@@ -135,8 +135,8 @@ export const cliente = [
 
 export const barman = [
   {
-    id_barman: 1,
-    nome: "Carlos Souza",
+    id_barman: "auth0|672a206b620fc2be082a8c27",
+    nome: "Pablo Barman",
     turno: "Manhã",
   },
   {
@@ -153,8 +153,8 @@ export const barman = [
 
 export const entregador = [
   {
-    id_entregador: 1,
-    nome: "Roberto Alves",
+    id_entregador: "auth0|672a22e5620fc2be082a8db8",
+    nome: "Pablo Entregador",
     status: "ativo",
     imagem: "imagem_roberto.png",
   },
@@ -185,14 +185,14 @@ export const assinatura = [
     data_inicio: "2024-09-05T09:00:00",
     periodicidade: 7,
     horario_agendamento: "2024-10-04T09:30:00",
-    fk_id_cliente: 2,
+    fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
   },
   {
     id_assinatura: 3,
     data_inicio: "2024-09-10T10:00:00",
     periodicidade: 15,
     horario_agendamento: "2024-10-04T08:30:00",
-    fk_id_cliente: 1,
+    fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
   },
 ];
 
@@ -203,8 +203,8 @@ export const notificacao = [
     data_hora: "2024-10-04T08:05:00",
     fk_id_entregador: null,
     fk_id_barman: null,
-    fk_id_pedido: 1,
-    fk_id_cliente: 1,
+    fk_id_pedido: 2,
+    fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
     created_at: "2024-10-04T08:00:00",
   },
   {
@@ -212,7 +212,7 @@ export const notificacao = [
     tipo: "barman",
     data_hora: "2024-10-04T09:05:00",
     fk_id_entregador: null,
-    fk_id_barman: 2,
+    fk_id_barman: "auth0|672a206b620fc2be082a8c27",
     fk_id_pedido: 2,
     fk_id_cliente: null,
     created_at: "2024-10-04T09:00:00",
@@ -221,7 +221,7 @@ export const notificacao = [
     id: 3,
     tipo: "entregador",
     data_hora: "2024-10-04T10:05:00",
-    fk_id_entregador: 1,
+    fk_id_entregador: "auth0|672a22e5620fc2be082a8db8",
     fk_id_barman: null,
     fk_id_pedido: 3,
     fk_id_cliente: null,
