@@ -1,5 +1,6 @@
 // app/api/management/route.ts
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
+
 
 const AUTH0_DOMAIN = process.env.AUTH0_ISSUER_BASE_URL;
 const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID;
@@ -32,23 +33,25 @@ async function getManagementAccessToken(): Promise<string> {
 }
 
 // Handler para obter `user_metadata` do usuário
-export async function GET(request: Request) {
-  
+export async function GET(request: NextRequest) {
+  // Acessando o parâmetro userId de forma segura
+  const userId = request.nextUrl.searchParams.get('userId');
+
+  if (!userId) {
+    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+  }
+
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-    }
-
     const token = await getManagementAccessToken();
-    // requisição com fetch
     const response = await fetch(`${AUTH0_DOMAIN}/api/v2/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    if (!response.ok) {
+      return NextResponse.json({ error: 'Failed to fetch user data' }, { status: response.status });
+    }
 
     const data = await response.json();
 
@@ -59,9 +62,9 @@ export async function GET(request: Request) {
       picture: data.picture,
       phone_number: data.phone_number,
       tipo_cargo: data.user_metadata?.tipo_cargo || 'cliente',
-    }
+    };
 
-    return NextResponse.json(user_data); // Retorna apenas o `user_metadata`
+    return NextResponse.json(user_data);
   } catch (error) {
     console.error("Erro ao obter metadados do usuário:", error);
     return NextResponse.json({ error: 'Failed to fetch user metadata' }, { status: 500 });

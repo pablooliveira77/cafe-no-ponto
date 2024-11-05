@@ -1,20 +1,21 @@
 import React from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import Image from "next/image";
 
-interface ProfileMenuProps {
-  user: {
-    picture: string;
-  };
-}
-
-const ProfileMenu: React.FC<ProfileMenuProps> = ({ user }) => (
+const ProfileMenu: React.FC = () => (
   <Menu as="div" className="relative ml-3">
     <div>
       <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
         <span className="absolute -inset-1.5" />
         <span className="sr-only">Open user menu</span>
-        <img className="h-8 w-8 rounded-full" src={user.picture} alt="Perfil" />
+        <Image
+            src="/perfil.jpeg"
+            alt="Imagem de perfil"
+            width={96}
+            height={96}
+            className="h-8 w-8 rounded-full"
+          />
       </Menu.Button>
     </div>
     <Transition
