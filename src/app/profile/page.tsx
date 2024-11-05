@@ -5,6 +5,7 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
 import { pedido } from "@/app/content";
 import ListPedido from "@/components/ListPedidosProfile";
+import Image from "next/image";
 
 interface UserMetadata {
   user_id: string;
@@ -50,10 +51,17 @@ const Profile: NextPage = () => {
         <p className="text-gray-600">Carregando informações do usuário...</p>
       ) : (
         <div className="flex items-center space-x-4">
-          <img
+          {/* <img
             src={userData?.picture || "/default-avatar.png"}
             alt="Imagem de perfil"
             className="w-24 h-24 rounded-full border border-gray-200"
+          /> */}
+          <Image
+            src="/perfil.jpeg"
+            alt="Imagem de perfil"
+            width={96}
+            height={96}
+            className="rounded-full border border-gray-200"
           />
           <div>
             <span className="bg-slate-200 text-xs p-0.5 rounded-sm">Id: {userData?.user_id}</span>

@@ -1,8 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
    images: {
-      domains: ['tailwindui.com'],
-    },
-};
-
-export default nextConfig;
+     remotePatterns: [
+       {
+         protocol: 'https',
+         hostname: 'tailwindui.com',
+         port: '',
+         pathname: '/**',
+       },
+     ],
+   },
+ };
+ 
+ export default nextConfig;
+ 
