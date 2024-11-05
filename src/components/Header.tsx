@@ -27,6 +27,8 @@ import {
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
 import Image from "next/image";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import ProfileMenu from "./ProfileMenu";
 
 const products = [
   {
@@ -67,6 +69,8 @@ const callsToAction = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { user, isLoading } = useUser();
 
   return (
     <header className="bg-[#0b0b0a] text-coffe">
@@ -163,9 +167,17 @@ export default function Header() {
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 ">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {!isLoading && !user && (
+            <div className="relative">
+              <a
+                href="/api/auth/login"
+                className="text-sm font-semibold leading-6"
+              >
+                Login
+              </a>
+            </div>
+          )}
+          {user && user.picture && <ProfileMenu />}
         </div>
       </nav>
       <Dialog
@@ -239,7 +251,7 @@ export default function Header() {
               </div>
               <div className="py-6">
                 <a
-                  href="#"
+                  href="/api/auth/login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7  hover:bg-coffe hover:text-white"
                 >
                   Log in

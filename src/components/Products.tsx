@@ -12,7 +12,7 @@ interface Product {
 
 interface CardapioProps {
   item: Product;
-  addCarrinho: (id_cafe: number, nome: string, preco: number) => void;
+  addCarrinho?: (id_cafe: number, nome: string, preco: number) => void;
 }
 
 export default function ProductsInitial({ item, addCarrinho }: CardapioProps) {
@@ -37,12 +37,14 @@ export default function ProductsInitial({ item, addCarrinho }: CardapioProps) {
           <span className="text-xl font-bold text-gray-900">
             R$ {item.preco.toFixed(2)}
           </span>
-          <button
-            onClick={() => addCarrinho(item.id_cafe, item.nome, item.preco)}
-            className="px-4 py-2 bg-coffe text-white rounded-lg hover:bg-coffe/85 transition"
-          >
-            Adicionar
-          </button>
+          {addCarrinho && (
+            <button
+              onClick={() => addCarrinho(item.id_cafe, item.nome, item.preco)}
+              className="px-4 py-2 bg-coffe text-white rounded-lg hover:bg-coffe/85 transition"
+            >
+              Adicionar
+            </button>
+          )}
         </div>
       </div>
     </div>
