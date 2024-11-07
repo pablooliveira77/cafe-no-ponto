@@ -9,7 +9,7 @@
   display: grid;
   align-items: center;
   justify-items: center;
-  min-height: 100svh;
+  /* min-height: 100svh; */
   font-family: var(--font-geist-sans);
 }
 

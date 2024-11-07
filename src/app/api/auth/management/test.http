@@ -1,0 +1,2 @@
+### Get na api/auth/management
+GET http://localhost:3000/api/auth/management?userId=auth0|672a117751b32fa42c7d1983

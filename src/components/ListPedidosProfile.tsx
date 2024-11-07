@@ -3,17 +3,27 @@ import { cafe, cliente } from "@/app/content";
 interface Pedido {
   id_pedido: number;
   data_pedido: string;
-  horario_agendamento: string;
-  status_pedido: string;
   valor_pedido: number;
-  is_assinatura: boolean;
-  // fk_id_barman: string;
-  // fk_id_entregador: number;
+  data_semana: string[];
+  horario_agendamento: string[];
+  isActive: boolean;
+  fk_id_barman: string;
+  fk_id_entregador: string;
   fk_id_cliente: string;
-  fk_id_cafe: number;
-  fk_id_assinatura: number | null;
-  created_at: string;
+  fk_id_cafe: number[];
 }
+
+
+// id_pedido: 1,
+// data_pedido: "2024-10-04T08:00:00",
+// valor_pedido: 12,
+// data_semana: ['1', '3', '5'],
+// isActive: true,
+// horario_agendamento: ['07:00', '11:00'],
+// fk_id_barman: "auth0|672a206b620fc2be082a8c27",
+// fk_id_entregador: 2,
+// fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
+// fk_id_cafe: [1],
 
 interface ListPedidoProps {
   pedido: Pedido;
@@ -25,7 +35,7 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
       <div className="flex min-w-0 gap-x-4">
         <div className="min-w-0 flex-auto">
           {cafe.map((i) => {
-            if (i.id_cafe === pedido.fk_id_cafe) {
+            if (Array.isArray(pedido.fk_id_cafe) && pedido.fk_id_cafe.includes(i.id_cafe)) {
               return (
                 <div key={i.id_cafe} className="min-w-0 flex-auto">
                   <p className="text-sm font-semibold leading-6 text-coffe">
@@ -33,9 +43,6 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
                   </p>
                   <p className="mt-1 truncate text-xs leading-5">
                     Tipo: {i.tipo} - Tamanho: {i.tamanho}
-                  </p>
-                  <p className="mt-1 truncate text-xs leading-5">
-                    Status do Pedido: {pedido.status_pedido}
                   </p>
                 </div>
               );
@@ -48,8 +55,8 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
           R${pedido.valor_pedido},00
         </p>
         <p className="mt-1 text-xs leading-5 ">
-          <time dateTime={pedido.horario_agendamento}>
-            {new Date(pedido.horario_agendamento).toLocaleString()}
+          <time dateTime={pedido.data_pedido}>
+            {new Date(pedido.data_pedido).toLocaleString()}
           </time>
         </p>
         {cliente.map((i) => {
