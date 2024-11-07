@@ -1,7 +1,7 @@
 "use client";
 
 import ProductsInitial from "@/components/Products";
-import ListPedido from "@/components/ListPedidos";
+import AddAgendamento from "@/components/AddAgendamento";
 import InfoCart from "@/components/InfoCart";
 import styles from "./page.module.css";
 import { cafe } from "../app/content";
@@ -75,6 +75,10 @@ export default function Home() {
     }, 3000);
   };
 
+  const handleFinalizarCompra = () => {
+    setActiveTab(1);
+  };
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -98,7 +102,7 @@ export default function Home() {
               }`}
               onClick={() => setActiveTab(1)}
             >
-              Pedidos
+              Agendamentos
             </button>
           </div>
 
@@ -118,7 +122,13 @@ export default function Home() {
                 )}
 
                 {/* Exibir o carrinho ou informações do carrinho */}
-                <InfoCart carrinho={carrinho} setCarrinho={setCarrinho} />
+                <div className="bg-white p-4 rounded shadow-md text-center mb-6">
+                  <InfoCart
+                    carrinho={carrinho}
+                    setCarrinho={setCarrinho}
+                    handlebtn={handleFinalizarCompra}
+                  />
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {cafe.map((item) => (
@@ -134,9 +144,9 @@ export default function Home() {
             {activeTab === 1 && (
               <div className=" bg-black p-6">
                 <h1 className="text-2xl font-bold text-center mb-6 text-white">
-                  Seus Agendamentos
+                  Configurar Agendamento
                 </h1>
-                <ListPedido />
+                <AddAgendamento />
               </div>
             )}
           </div>

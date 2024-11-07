@@ -51,11 +51,7 @@ const Profile: NextPage = () => {
         <p className="text-gray-600">Carregando informações do usuário...</p>
       ) : (
         <div className="flex items-center space-x-4">
-          {/* <img
-            src={userData?.picture || "/default-avatar.png"}
-            alt="Imagem de perfil"
-            className="w-24 h-24 rounded-full border border-gray-200"
-          /> */}
+
           <Image
             src="/perfil.jpeg"
             alt="Imagem de perfil"

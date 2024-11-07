@@ -9,18 +9,25 @@ interface carrinho {
 
 interface InfoCartProps {
   carrinho: carrinho[];
-  setCarrinho: (carrinho: carrinho[]) => void;
+  setCarrinho?: (carrinho: carrinho[]) => void | undefined;
+  handlebtn?: () => void;
 }
 
-export default function InfoCart({ carrinho, setCarrinho }: InfoCartProps) {
+export default function InfoCart({
+  carrinho,
+  setCarrinho,
+  handlebtn,
+}: InfoCartProps) {
   const atualizarCarrinho = (id_cafe: number) => {
-    setCarrinho(
-      carrinho
-        .map((i) =>
-          i.id_cafe === id_cafe ? { ...i, quantidade: i.quantidade - 1 } : i
-        )
-        .filter((i) => i.quantidade > 0)
-    );
+    if (setCarrinho) {
+      setCarrinho(
+        carrinho
+          .map((i) =>
+            i.id_cafe === id_cafe ? { ...i, quantidade: i.quantidade - 1 } : i
+          )
+          .filter((i) => i.quantidade > 0)
+      );
+    }
 
     // Atualizar o localstorage
     localStorage.setItem(
@@ -36,15 +43,11 @@ export default function InfoCart({ carrinho, setCarrinho }: InfoCartProps) {
   };
 
   return (
-    <div className="mb-6">
+    <div>
       {carrinho.length === 0 ? (
-        <div className="bg-white p-4 rounded shadow-md text-center">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Carrinho Vazio
-          </h2>
-        </div>
+        <h2 className="text-lg font-semibold text-gray-900">Carrinho Vazio</h2>
       ) : (
-        <div className="bg-white p-4 rounded shadow-md">
+        <div className="text-left">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Carrinho</h2>
           <ul>
             {carrinho.map((item) => (
@@ -66,7 +69,7 @@ export default function InfoCart({ carrinho, setCarrinho }: InfoCartProps) {
             ))}
           </ul>
           <div className="mt-4 flex justify-between">
-            <span className="text-lg font-semibold text-gray-900">Total</span>
+            <span className="text-lg font-semibold text-gray-900">Total café</span>
             <span className="text-lg font-semibold text-gray-900">
               R${" "}
               {carrinho
@@ -74,9 +77,14 @@ export default function InfoCart({ carrinho, setCarrinho }: InfoCartProps) {
                 .toFixed(2)}
             </span>
           </div>
-          <button className="mt-4 px-4 py-2 bg-coffe text-white rounded-lg hover:bg-coffe/85 transition">
-            Finalizar Pedido
-          </button>
+          {handlebtn && (
+            <button
+              onClick={handlebtn}
+              className="mt-4 px-4 py-2 bg-coffe text-white rounded-lg hover:bg-coffe/85 transition"
+            >
+              Finalizar Pedido
+            </button>
+          )}
         </div>
       )}
     </div>

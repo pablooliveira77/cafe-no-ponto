@@ -1,0 +1,21 @@
+### Get na /api/cron
+GET http://localhost:3000/api/cron
+
+### POST na /api/cron
+POST http://localhost:3000/api/cron
+Content-Type: application/json
+
+{
+   "id_assinatura": "2",
+   "fk_id_cliente": "auth0|672a117751b32fa42c7d1983",
+   "data_semana": ["1", "2"],
+   "horario_agendamento": ["16:55"]
+}
+
+### DELETE cron
+DELETE http://localhost:3000/api/cron
+Content-Type: application/json
+
+{
+   "id_assinatura": "2"
+}

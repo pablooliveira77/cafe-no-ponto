@@ -177,7 +177,7 @@ export default function Header() {
               </a>
             </div>
           )}
-          {user && user.picture && <ProfileMenu />}
+          {user && user.picture && <ProfileMenu user={user} />}
         </div>
       </nav>
       <Dialog
