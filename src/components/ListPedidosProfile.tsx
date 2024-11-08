@@ -1,16 +1,10 @@
-import { cafe, cliente } from "@/app/content";
+import { cliente } from "@/app/content";
 
 interface Pedido {
   id_pedido: number;
   data_pedido: string;
   valor_pedido: number;
-  data_semana: string[];
-  horario_agendamento: string[];
-  isActive: boolean;
-  fk_id_barman: string;
-  fk_id_entregador: string;
   fk_id_cliente: string;
-  fk_id_cafe: number[];
 }
 
 
@@ -23,7 +17,7 @@ interface Pedido {
 // fk_id_barman: "auth0|672a206b620fc2be082a8c27",
 // fk_id_entregador: 2,
 // fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
-// fk_id_cafe: [1],
+// fk_id_catalogo: [1],
 
 interface ListPedidoProps {
   pedido: Pedido;
@@ -34,10 +28,10 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
     <li className="flex justify-between gap-x-6 py-5 ">
       <div className="flex min-w-0 gap-x-4">
         <div className="min-w-0 flex-auto">
-          {cafe.map((i) => {
-            if (Array.isArray(pedido.fk_id_cafe) && pedido.fk_id_cafe.includes(i.id_cafe)) {
+          {/* {catalogo.map((i) => {
+            if (Array.isArray(pedido.fk_id_catalogo) && pedido.fk_id_catalogo.includes(i.id_catalogo)) {
               return (
-                <div key={i.id_cafe} className="min-w-0 flex-auto">
+                <div key={i.id_catalogo} className="min-w-0 flex-auto">
                   <p className="text-sm font-semibold leading-6 text-coffe">
                     {i.nome}
                   </p>
@@ -47,7 +41,7 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
                 </div>
               );
             }
-          })}
+          })} */}
         </div>
       </div>
       <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
@@ -63,9 +57,9 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
           if (i.id_cliente === pedido.fk_id_cliente) {
             return (
               <div key={i.id_cliente} className="flex flex-col items-end">
-                <p className="mt-1 truncate text-xs leading-5 ">
+                {/* <p className="mt-1 truncate text-xs leading-5 ">
                   Entrega: {i.endereco_entrega}
-                </p>
+                </p> */}
               </div>
             );
           }

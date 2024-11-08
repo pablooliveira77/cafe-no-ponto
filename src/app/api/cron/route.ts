@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     // fk_id_barman,
     // fk_id_entregador,
     fk_id_cliente,
-    // fk_id_cafe,
+    // fk_id_catalogo,
   } = body;
 
   // Itera por cada horário e cria o job com a expressão cron

@@ -4,13 +4,13 @@ import ProductsInitial from "@/components/Products";
 import AddAgendamento from "@/components/AddAgendamento";
 import InfoCart from "@/components/InfoCart";
 import styles from "./page.module.css";
-import { cafe } from "../app/content";
+import { catalogo } from "../app/content";
 import { useState, useEffect } from "react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [carrinho, setCarrinho] = useState<
-    { id_cafe: number; nome: string; preco: number; quantidade: number }[]
+    { id_catalogo: number; nome: string; preco: number; quantidade: number }[]
   >([]);
   const [alerta, setAlerta] = useState<string | null>(null);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
@@ -22,20 +22,20 @@ export default function Home() {
 
     if (carrinhoLocalstorage.length > 0) {
       const novoCarrinho: {
-        id_cafe: number;
+        id_catalogo: number;
         nome: string;
         preco: number;
         quantidade: number;
       }[] = [];
       carrinhoLocalstorage.forEach(
         (item: {
-          id_cafe: number;
+          id_catalogo: number;
           nome: string;
           preco: number;
           quantidade: number;
         }) => {
           const item_existente = novoCarrinho.find(
-            (i) => i.id_cafe === item.id_cafe
+            (i) => i.id_catalogo === item.id_catalogo
           );
           if (item_existente) {
             item_existente.quantidade += item.quantidade;
@@ -48,23 +48,23 @@ export default function Home() {
     }
   }, []);
 
-  const addCarrinho = (id_cafe: number, nome: string, preco: number) => {
+  const addCarrinho = (id_catalogo: number, nome: string, preco: number) => {
     setCarrinho((carrinho) => {
-      const item_existente = carrinho.find((item) => item.id_cafe === id_cafe);
+      const item_existente = carrinho.find((item) => item.id_catalogo === id_catalogo);
       if (item_existente) {
         return carrinho.map((item) =>
-          item.id_cafe === id_cafe
+          item.id_catalogo === id_catalogo
             ? { ...item, quantidade: item.quantidade + 1 }
             : item
         );
       } else {
-        return [...carrinho, { id_cafe, nome, preco, quantidade: 1 }];
+        return [...carrinho, { id_catalogo, nome, preco, quantidade: 1 }];
       }
     });
 
     localStorage.setItem(
       "carrinho",
-      JSON.stringify([...carrinho, { id_cafe, nome, preco, quantidade: 1 }])
+      JSON.stringify([...carrinho, { id_catalogo, nome, preco, quantidade: 1 }])
     );
 
     setAlerta(nome + " adicionado ao carrinho");
@@ -131,9 +131,9 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {cafe.map((item) => (
+                  {catalogo.map((item) => (
                     <ProductsInitial
-                      key={item.id_cafe}
+                      key={item.id_catalogo}
                       item={item}
                       addCarrinho={addCarrinho}
                     />

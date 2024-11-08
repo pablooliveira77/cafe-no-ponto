@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface Product {
-  id_cafe: number;
+  id_catalogo: number;
   nome: string;
   descricao: string;
   tipo: string;
@@ -12,7 +12,7 @@ interface Product {
 
 interface CardapioProps {
   item: Product;
-  addCarrinho?: (id_cafe: number, nome: string, preco: number) => void;
+  addCarrinho?: (id_catalogo: number, nome: string, preco: number) => void;
 }
 
 export default function ProductsInitial({ item, addCarrinho }: CardapioProps) {
@@ -39,7 +39,7 @@ export default function ProductsInitial({ item, addCarrinho }: CardapioProps) {
           </span>
           {addCarrinho && (
             <button
-              onClick={() => addCarrinho(item.id_cafe, item.nome, item.preco)}
+              onClick={() => addCarrinho(item.id_catalogo, item.nome, item.preco)}
               className="px-4 py-2 bg-coffe text-white rounded-lg hover:bg-coffe/85 transition"
             >
               Adicionar

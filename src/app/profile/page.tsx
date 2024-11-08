@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
-import { pedido } from "@/app/content";
+import { pedidos } from "@/app/content";
 import ListPedido from "@/components/ListPedidosProfile";
 import Image from "next/image";
 
@@ -82,7 +82,7 @@ const Profile: NextPage = () => {
             {/* filtrar fk_id_cliente = userData?.user_id */}
             <h4 className="text-gray-600">Seus pedidos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedido
+              {pedidos
                 .filter((item) => item.fk_id_cliente === userData?.user_id)
                 .map((item) => (
                   <ListPedido
@@ -99,7 +99,7 @@ const Profile: NextPage = () => {
           <div>
             <h4 className="text-gray-600">Todos os pedidos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedido.map((item) => (
+              {pedidos.map((item) => (
                 <ListPedido
                   key={item.id_pedido}
                   pedido={{
@@ -110,12 +110,11 @@ const Profile: NextPage = () => {
             </div>
           </div>
         )}
-        {userData?.tipo_cargo === "barman" && (
+        {/* {userData?.tipo_cargo === "barman" && (
           <div>
-            {/* filtrar fk_id_barman = userData?.user_id */}
             <h4 className="text-gray-600">Seus agendamentos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedido
+              {pedidos
                 .filter((item) => item.fk_id_barman === userData?.user_id)
                 .map((item) => (
                   <ListPedido
@@ -127,13 +126,12 @@ const Profile: NextPage = () => {
                 ))}
             </div>
           </div>
-        )}
-        {userData?.tipo_cargo === "entregador" && (
+        )} */}
+        {/* {userData?.tipo_cargo === "entregador" && (
           <div>
-            {/* filtrar fk_id_entregador = userData?.user_id */}
             <h4 className="text-gray-600">Seus agendamentos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedido
+              {pedidos
                 .filter((item) => item.fk_id_entregador === userData?.user_id)
                 .map((item) => (
                   <ListPedido
@@ -145,7 +143,7 @@ const Profile: NextPage = () => {
                 ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
