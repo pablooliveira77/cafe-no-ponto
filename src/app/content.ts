@@ -142,7 +142,7 @@ export const notificacao = [
     tipo: "cliente",
     data_hora: "2024-10-04T08:05:00",
     fk_id_pessoa: "auth0|672a117751b32fa42c7d1983",
-    fk_id_pedido: 2,
+    fk_id_recorrencia: 1,
     created_at: "2024-10-04T08:00:00",
   },
   {
@@ -150,7 +150,7 @@ export const notificacao = [
     tipo: "barman",
     data_hora: "2024-10-04T09:05:00",
     fk_id_pessoa: "auth0|672a206b620fc2be082a8c27",
-    fk_id_pedido: 2,
+    fk_id_recorrencia: 2,
     created_at: "2024-10-04T09:00:00",
   },
   {
@@ -158,7 +158,7 @@ export const notificacao = [
     tipo: "entregador",
     data_hora: "2024-10-04T10:05:00",
     fk_id_pessoa: "auth0|672a22e5620fc2be082a8db8",
-    fk_id_pedido: 3,
+    fk_id_recorrencia: 3,
     created_at: "2024-10-04T10:00:00",
   },
 ];
@@ -170,7 +170,6 @@ export const recorrencias = [
     horario_agendamento: ["10:00", "14:00"],
     data_limite: new Date("2023-12-01"),
     fk_id_pedido: 1,
-    fk_id_notificacao: 1,
   },
   {
     id_recorrencia: 2,
@@ -178,7 +177,6 @@ export const recorrencias = [
     horario_agendamento: ["11:00", "15:00"],
     data_limite: new Date("2023-12-02"),
     fk_id_pedido: 2,
-    fk_id_notificacao: 2,
   },
   {
     id_recorrencia: 3,
@@ -186,7 +184,6 @@ export const recorrencias = [
     horario_agendamento: ["12:00", "16:00"],
     data_limite: new Date("2023-12-03"),
     fk_id_pedido: 3,
-    fk_id_notificacao: 3,
   },
 ];
 

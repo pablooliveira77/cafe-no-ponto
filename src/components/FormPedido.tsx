@@ -42,8 +42,10 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
   const [recorrencia, setRecorrencia] = useState<recorrencia>({
     id_recorrencia: 0,
     data_semana: [],
-    horario_agendamento: ['07:00'],
-    data_limite: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0],
+    horario_agendamento: ["07:00"],
+    data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
+      .toISOString()
+      .split("T")[0],
     fk_id_pedido: 0,
     fk_id_notificacao: 0,
   });
@@ -93,8 +95,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
       ...prev,
       data_limite: data,
     }));
-  }
-
+  };
 
   const handleValor = (cart_total: CarrinhoItem[]): number => {
     const cart_pedido = cart_total.reduce(
@@ -114,7 +115,6 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     event.preventDefault();
     const id_pedido = Math.floor(Math.random() * 1000);
     const id_recorrencia = Math.floor(Math.random() * 1000);
-    const id_pedido_catalogo = Math.floor(Math.random() * 1000);
 
     //  Atualizar dados do produto
     recorrencia.fk_id_pedido = id_pedido;
@@ -127,17 +127,17 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
       fk_id_cliente: user_id,
     };
 
-    const pedido_catalogo = carrinho.map((item) => ({
-      id_pedido_catalogo: id_pedido_catalogo,
-      id_catalogo: item.id_catalogo,
-      fk_id_pedido: id_pedido,
-    }));
+    const pedido_catalogo = carrinho.flatMap((item) =>
+      Array(item.quantidade).fill({
+        id: Math.floor(Math.random() * 1000),
+        fk_id_pedido: id_pedido,
+        fk_id_catalogo: item.id_catalogo,
+      })
+    );
 
     console.log("Seu Pedido:", pedido);
     console.log("Seu Pedido Catalogo:", pedido_catalogo);
-    
     console.log("Sua Recorrencia:", recorrencia);
-    
 
     if (recorrencia.data_semana.length === 0) {
       alert("Selecione pelo menos um dia da semana");
@@ -150,36 +150,35 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     }
 
     // Enviar requisição para a API
-    // const response = await fetch("/api/cron", {
-    //   method: "POST",
-    //   body: JSON.stringify(pedido),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
+    const response = await fetch("/api/cron", {
+      method: "POST",
+      body: JSON.stringify(pedido),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // const data = await response.json();
+    const data = await response.json();
 
-    // console.log("Resposta da API:", data);
+    console.log("Resposta da API:", data);
 
-    // if (response.ok) {
+    if (response.ok) {
     //   alert(data.message);
 
-    //   setPedido({
-    //     id_pedido: 0,
-    //     data_pedido: "",
-    //     valor_pedido: 0,
-    //     data_semana: [],
-    //     horario_agendamento: [],
-    //     isActive: true,
-    //     fk_id_barman: "",
-    //     fk_id_entregador: "",
-    //     fk_id_cliente: "",
-    //     fk_id_catalogo: [],
-    //   });
-    // } else {
-    //   alert("Erro ao configurar agendamento");
-    // }
+    /// LImpar recorrencia
+      setRecorrencia({
+        id_recorrencia: 0,
+        data_semana: [],
+        horario_agendamento: ["07:00"],
+        data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
+          .toISOString()
+          .split("T")[0],
+        fk_id_pedido: 0,
+        fk_id_notificacao: 0,
+      });
+    } else {
+      alert("Erro ao configurar agendamento");
+    }
   };
 
   return (
@@ -189,7 +188,10 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
           <h3 className="font-semibold">Dias da Semana:</h3>
           <div className="grid grid-cols-2 gap-2 mt-2">
             {semana.map((day) => (
-              <label key={day.value} className="flex items-handleTimeChange(e, 0)center space-x-2">
+              <label
+                key={day.value}
+                className="flex items-handleTimeChange(e, 0)center space-x-2"
+              >
                 <input
                   type="checkbox"
                   value={day.value}
@@ -237,8 +239,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
           <input
             type="date"
             value={recorrencia.data_limite}
-            onChange={(e) => handleDataLimite(e)
-            }
+            onChange={(e) => handleDataLimite(e)}
             className="p-2 block w-full border rounded"
           />
         </div>
