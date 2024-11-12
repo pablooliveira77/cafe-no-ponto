@@ -5,8 +5,8 @@ interface Pedido {
   data_pedido: string;
   valor_pedido: number;
   endereco_entrega: string;
-  data_semana: [string];
-  horario_agendamento: [string];
+  data_semana: string;
+  horario_agendamento: string[];
   data_limite: string;
   fk_id_cliente: string;
   itens_catalogo: [
@@ -38,7 +38,6 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
   //   const data_formatada = await getData(data)
   //   return data_formatada
   // }
-  
 
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow border">
@@ -55,10 +54,16 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
           <p>
             <strong>Endereço de Entrega:</strong> {pedido.endereco_entrega}
           </p>
-          <span className="text-gray-500"><strong>Data:</strong> {pedido.data_pedido}</span>
+          <span className="text-gray-500">
+            <strong>Data:</strong> {pedido.data_pedido}
+          </span>
         </div>
         <p>
-          <strong>Dias de Entrega:</strong> {pedido.data_semana.join(", ")}
+          <strong>Dias de Entrega:</strong> {pedido.data_semana}
+        </p>
+        <p>
+          <strong>Horários de Entrega:</strong>{" "}
+          {pedido.horario_agendamento.join(", ")}
         </p>
       </div>
       <div>

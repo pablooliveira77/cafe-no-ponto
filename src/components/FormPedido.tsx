@@ -40,6 +40,9 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
       .split("T")[0],
     fk_id_pedido: 0,
   });
+  const [endereco, setEndereco] = useState("");
+  const [btn, setBtn] = useState(false);
+  const [btnText, setBtnText] = useState("Realizar pedido");
 
   const handleDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const day = event.target.value;
@@ -104,114 +107,247 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    updateButtonState(true, "Enviando...");
+
     const id_pedido = Math.floor(Math.random() * 1000);
     const id_recorrencia = Math.floor(Math.random() * 1000);
 
-    //  Atualizar dados do produto
-    recorrencia.fk_id_pedido = id_pedido;
-    recorrencia.id_recorrencia = id_recorrencia;
+    atualizarDadosRecorrencia(id_pedido, id_recorrencia);
 
-    const pedido = {
-      tipo: "pedido",
-      id_pedido: id_pedido,
-      data_pedido: new Date().toISOString(),
-      valor_pedido: handleValor(carrinho),
-      fk_id_cliente: user_id,
-    };
-
-    const pedido_catalogo = {
-      tipo: "pedido_catalogo",
-      fk_id_pedido: id_pedido,
-      itens: carrinho.flatMap((item) =>
-        Array(item.quantidade).fill({
-          id_catalogo: item.id_catalogo,
-        })
-      ),
-    };
+    const pedido = criarPedido(id_pedido);
+    const pedido_catalogo = criarPedidoCatalogo(id_pedido);
 
     console.log("Seu Pedido:", pedido);
     console.log("Seu Pedido Catalogo:", pedido_catalogo);
     console.log("Sua Recorrencia:", recorrencia);
 
-    if (recorrencia.data_semana.length === 0) {
-      alert("Selecione pelo menos um dia da semana");
+    if (!validarDados()) {
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    if (recorrencia.horario_agendamento.length === 0) {
-      alert("Adicione pelo menos um horário");
+    // Executa as requisições em sequência, uma após a outra
+    const pedidoResponse = await salvarDados("/api/pedido", pedido);
+    if (!pedidoResponse.ok) {
+      alert("Erro ao fazer o pedido");
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    // Salvar pedido no banco de dados
-    const response_pedido = await fetch("/api/pedido", {
-      method: "POST",
-      body: JSON.stringify(pedido),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response_pedido.ok) {
-      alert("Erro ao salvar pedido");
+    const catalogoResponse = await salvarDados("/api/pedido", pedido_catalogo);
+    if (!catalogoResponse.ok) {
+      alert("Erro ao fazer o pedido no catálogo");
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    // Salvar catalogo do pedido no banco de dados
-    const response_catalogo = await fetch("/api/pedido", {
-      method: "POST",
-      body: JSON.stringify(pedido_catalogo),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response_catalogo.ok) {
-      alert("Erro ao salvar catalogo do pedido");
+    const recorrenciaResponse = await salvarDados(
+      "/api/recorrencia",
+      recorrencia
+    );
+    if (!recorrenciaResponse.ok) {
+      alert("Erro ao salvar a recorrência");
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    // Salvar recorrencia no banco de dados
-    const response_recorrencia = await fetch("/api/recorrencia", {
-      method: "POST",
-      body: JSON.stringify(recorrencia),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response_recorrencia.ok) {
-      alert("Erro ao salvar recorrencia");
+    if (!pedidoResponse.ok || !catalogoResponse.ok || !recorrenciaResponse.ok) {
+      alert("Erro ao fazer o pedido");
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    // Enviar requisição para a API
-    const response = await fetch("/api/cron", {
-      method: "POST",
-      body: JSON.stringify(recorrencia),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const cronResponse = await salvarDados("/api/cron", recorrencia);
 
-    const data = await response.json();
-
-    console.log("Resposta do cron:", data);
-
-    if (response.ok) {
-      setRecorrencia({
-        id_recorrencia: 0,
-        data_semana: [],
-        horario_agendamento: ["07:00"],
-        data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
-          .toISOString()
-          .split("T")[0],
-        fk_id_pedido: 0,
-      });
+    if (cronResponse.ok) {
+      resetarForm();
     } else {
       alert("Erro ao configurar agendamento");
     }
+
+    updateButtonState(false, "Realizar pedido");
   };
+
+  const updateButtonState = (isDisabled: boolean, text: string) => {
+    setBtn(isDisabled);
+    setBtnText(text);
+  };
+
+  const atualizarDadosRecorrencia = (
+    id_pedido: number,
+    id_recorrencia: number
+  ) => {
+    recorrencia.fk_id_pedido = id_pedido;
+    recorrencia.id_recorrencia = id_recorrencia;
+  };
+
+  const criarPedido = (id_pedido: number) => ({
+    tipo: "pedido",
+    id_pedido,
+    data_pedido: new Date().toISOString(),
+    endereco_entrega: endereco,
+    valor_pedido: handleValor(carrinho),
+    fk_id_cliente: user_id,
+  });
+
+  const criarPedidoCatalogo = (id_pedido: number) => ({
+    tipo: "pedido_catalogo",
+    fk_id_pedido: id_pedido,
+    itens: carrinho.flatMap((item) =>
+      Array(item.quantidade).fill({ id_catalogo: item.id_catalogo })
+    ),
+  });
+
+  const validarDados = () => {
+    if (recorrencia.data_semana.length === 0) {
+      alert("Selecione pelo menos um dia da semana");
+      return false;
+    }
+    if (recorrencia.horario_agendamento.length === 0) {
+      alert("Selecione pelo menos um horário");
+      return false;
+    }
+    if (endereco === "") {
+      alert("Informe o endereço de entrega");
+      return false;
+    }
+    return true;
+  };
+
+  const salvarDados = async (url: string, data: object) => {
+    return await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" },
+    });
+  };
+
+  const resetarForm = () => {
+    setRecorrencia({
+      id_recorrencia: 0,
+      data_semana: [],
+      horario_agendamento: ["07:00"],
+      data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
+        .toISOString()
+        .split("T")[0],
+      fk_id_pedido: 0,
+    });
+    setEndereco("");
+
+    // Limpar carrinho
+    localStorage.removeItem("carrinho");
+  };
+
+  // const handleSubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   setBtn(true);
+  //   setBtnText("Enviando...");
+
+  //   const id_pedido = Math.floor(Math.random() * 1000);
+  //   const id_recorrencia = Math.floor(Math.random() * 1000);
+
+  //   //  Atualizar dados do produto
+  //   recorrencia.fk_id_pedido = id_pedido;
+  //   recorrencia.id_recorrencia = id_recorrencia;
+
+  //   const pedido = {
+  //     tipo: "pedido",
+  //     id_pedido: id_pedido,
+  //     data_pedido: new Date().toISOString(),
+  //     endereco_entrega: endereco,
+  //     valor_pedido: handleValor(carrinho),
+  //     fk_id_cliente: user_id,
+  //   };
+
+  //   const pedido_catalogo = {
+  //     tipo: "pedido_catalogo",
+  //     fk_id_pedido: id_pedido,
+  //     itens: carrinho.flatMap((item) =>
+  //       Array(item.quantidade).fill({
+  //         id_catalogo: item.id_catalogo,
+  //       })
+  //     ),
+  //   };
+
+  //   console.log("Seu Pedido:", pedido);
+  //   console.log("Seu Pedido Catalogo:", pedido_catalogo);
+  //   console.log("Sua Recorrencia:", recorrencia);
+
+  //   if (recorrencia.data_semana.length === 0 || recorrencia.horario_agendamento.length === 0 || endereco === "") {
+  //     if (recorrencia.data_semana.length === 0) {
+  //       alert("Selecione pelo menos um dia da semana");
+  //     }
+  //     if (recorrencia.horario_agendamento.length === 0) {
+  //       alert("Selecione pelo menos um horário");
+  //     }
+  //     if (endereco === "") {
+  //       alert("Informe o endereço de entrega");
+  //     }
+  //     setBtn(false);
+  //     setBtnText("Realizar pedido");
+  //     return;
+  //   }
+
+  //   // Salvar pedido no banco de dados
+  //   const response_pedido = await fetch("/api/pedido", {
+  //     method: "POST",
+  //     body: JSON.stringify(pedido),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   // Salvar catalogo do pedido no banco de dados
+  //   const response_catalogo = await fetch("/api/pedido", {
+  //     method: "POST",
+  //     body: JSON.stringify(pedido_catalogo),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   // Salvar recorrencia no banco de dados
+  //   const response_recorrencia = await fetch("/api/recorrencia", {
+  //     method: "POST",
+  //     body: JSON.stringify(recorrencia),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   if (!response_recorrencia.ok || !response_pedido.ok || !response_catalogo.ok) {
+  //     alert("Erro ao fazer o pedido");
+  //     setBtn(false);
+  //     setBtnText("Realizar pedido");
+  //     return;
+  //   }
+
+  //   // Enviar requisição para a API
+  //   const response = await fetch("/api/cron", {
+  //     method: "POST",
+  //     body: JSON.stringify(recorrencia),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   if (response.ok) {
+  //     setRecorrencia({
+  //       id_recorrencia: 0,
+  //       data_semana: [],
+  //       horario_agendamento: ["07:00"],
+  //       data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
+  //         .toISOString()
+  //         .split("T")[0],
+  //       fk_id_pedido: 0,
+  //     });
+  //     setEndereco("");
+  //     setBtn(false);
+  //     setBtnText("Realizar pedido");
+  //   } else {
+  //     alert("Erro ao configurar agendamento");
+  //   }
+  // };
 
   return (
     <div>
@@ -265,6 +401,17 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
           </button>
         </div>
 
+        <div className="mb-4">
+          <h3 className="font-semibold">Endereço de entrega</h3>
+          <input
+            type="text"
+            placeholder="Endereço de entrega"
+            value={endereco}
+            onChange={(e) => setEndereco(e.target.value)}
+            className="p-2 block w-full border rounded"
+          />
+        </div>
+
         {/* Selecionar data limite da recorrencia */}
         <div className="mb-4">
           <label className="block font-semibold">Data Limite:</label>
@@ -287,9 +434,12 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
         <button
           type="submit"
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          {...(btn && { disabled: true })}
+          className={`mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${
+            btn && "opacity-50 cursor-wait"
+          }`}
         >
-          Realizar pedido
+          {btnText}
         </button>
       </form>
     </div>

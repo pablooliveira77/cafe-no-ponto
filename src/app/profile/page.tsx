@@ -20,8 +20,8 @@ interface Pedido {
   data_pedido: string;
   valor_pedido: number;
   endereco_entrega: string;
-  data_semana: [string];
-  horario_agendamento: [string];
+  data_semana: string;
+  horario_agendamento: string[];
   data_limite: string;
   fk_id_cliente: string;
   itens_catalogo: [
@@ -49,7 +49,7 @@ const Profile: NextPage = () => {
   
   useEffect(() => {
     const metadata = async () => {
-      const { getData } = new UtilsSwiss();
+      const { getData, getSemana } = new UtilsSwiss();
       if (user) {
         const response = await fetch(`/api/auth/management?userId=${user.sub}`);
         if (!response.ok) {
@@ -75,9 +75,10 @@ const Profile: NextPage = () => {
         const pedido_json = await responsePedidos.json();
         console.log("pedidos", pedido_json);
         const pedidosTransformados = await Promise.all(
-          pedido_json.map(async (pedido: { data_pedido: string; }) => ({
+          pedido_json.map(async (pedido: { data_pedido: string; data_semana: string[] }) => ({
             ...pedido,
             data_pedido: await getData(pedido.data_pedido),
+            data_semana: await getSemana(pedido.data_semana),
           }))
         );
     
@@ -134,6 +135,8 @@ const Profile: NextPage = () => {
             <div className="">
               {pedidos
                 .filter((item) => item.fk_id_cliente === userData?.id_pessoa)
+                // Ordenar por data_pedido ao contrário
+                .sort((a, b) => (a.data_pedido > b.data_pedido ? -1 : 1))
                 .map((item) => (
                   <ListPedido
                     key={item.id_pedido}

@@ -111,7 +111,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div className="py-2 bg-white shadow-lg rounded-lg">
+        <div className="pt-2 bg-white shadow-lg rounded-lg">
           <div className="flex justify-around mb-2 border-b-2 border-gray-200">
             <button
               className={`px-4 py-2 text-lg font-semibold ${
@@ -138,7 +138,7 @@ export default function Home() {
           {/* Renderizando o conteúdo da aba ativa */}
           <div>
             {activeTab === 0 && (
-              <div className=" bg-black p-6">
+              <div className=" bg-black p-6 min-h-screen">
                 <h1 className="text-2xl font-bold text-center mb-6 text-coffe">
                   Cardápio Digital
                 </h1>
@@ -149,30 +149,39 @@ export default function Home() {
                     {alerta}
                   </div>
                 )}
+                {catalogo.length > 0 ? (
+                  <div>
+                    {/* Exibir o carrinho ou informações do carrinho */}
+                    <div className="bg-white p-4 rounded shadow-md text-center mb-6">
+                      <InfoCart
+                        carrinho={carrinho}
+                        setCarrinho={setCarrinho}
+                        handlebtn={handleFinalizarCompra}
+                      />
+                    </div>
 
-                {/* Exibir o carrinho ou informações do carrinho */}
-                <div className="bg-white p-4 rounded shadow-md text-center mb-6">
-                  <InfoCart
-                    carrinho={carrinho}
-                    setCarrinho={setCarrinho}
-                    handlebtn={handleFinalizarCompra}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {catalogo.map((item) => (
-                    <ProductsInitial
-                      key={item.id_catalogo}
-                      item={item}
-                      addCarrinho={addCarrinho}
-                    />
-                  ))}
-                </div>
+                    <div id="cardapio" className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                      {catalogo.map((item) => (
+                        <ProductsInitial
+                          key={item.id_catalogo}
+                          item={item}
+                          addCarrinho={addCarrinho}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-white">
+                    <h1 className="text-2xl font-bold">
+                      Carregando Produtos...
+                    </h1>
+                  </div>
+                )}
               </div>
             )}
             {activeTab === 1 && (
               <div className=" bg-black p-6">
-                <h1 className="text-2xl font-bold text-center mb-6 text-white">
+                <h1 className="text-2xl font-bold text-center mb-6 text-coffe">
                   Configurar Agendamento
                 </h1>
                 <AddAgendamento />
