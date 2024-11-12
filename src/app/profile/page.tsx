@@ -3,25 +3,53 @@ import { NextPage } from "next";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { useEffect, useState } from "react";
-import { pedidos } from "@/app/content";
 import ListPedido from "@/components/ListPedidosProfile";
 import Image from "next/image";
+import UtilsSwiss from "@/utils/func/swiss";
 
 interface UserMetadata {
-  user_id: string;
-  username: string;
+  id_pessoa: string;
+  nome: string;
   email: string;
-  picture: string;
-  phone_number: string;
-  tipo_cargo: string;
+  numero: string;
+  tipo: string;
+}
+
+interface Pedido {
+  id_pedido: number;
+  data_pedido: string;
+  valor_pedido: number;
+  endereco_entrega: string;
+  data_semana: [string];
+  horario_agendamento: [string];
+  data_limite: string;
+  fk_id_cliente: string;
+  itens_catalogo: [
+    {
+      id_catalogo: number;
+      nome: string;
+      tipo: string;
+      tamanho: string;
+      imagem: string;
+    },
+    {
+      id_catalogo: number;
+      nome: string;
+      tipo: string;
+      tamanho: string;
+      imagem: string;
+    }
+  ];
 }
 
 const Profile: NextPage = () => {
   const { user, error, isLoading } = useUser();
   const [userData, setUserData] = useState<UserMetadata | null>(null);
-
+  const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  
   useEffect(() => {
     const metadata = async () => {
+      const { getData } = new UtilsSwiss();
       if (user) {
         const response = await fetch(`/api/auth/management?userId=${user.sub}`);
         if (!response.ok) {
@@ -30,7 +58,30 @@ const Profile: NextPage = () => {
         }
         const user_data = await response.json();
         console.log("usuário", user_data);
-        setUserData(user_data);
+
+        setUserData({
+          id_pessoa: user_data.user_id,
+          nome: user_data.username,
+          email: user_data.email,
+          numero: user_data.phone_number,
+          tipo: user_data.tipo_cargo,
+        });
+
+        const responsePedidos = await fetch(`/api/pedido`);
+        if (!responsePedidos.ok) {
+          console.error("Failed to fetch pedidos");
+          return;
+        }
+        const pedido_json = await responsePedidos.json();
+        console.log("pedidos", pedido_json);
+        const pedidosTransformados = await Promise.all(
+          pedido_json.map(async (pedido: { data_pedido: string; }) => ({
+            ...pedido,
+            data_pedido: await getData(pedido.data_pedido),
+          }))
+        );
+    
+        setPedidos(pedidosTransformados);
       }
     };
 
@@ -47,11 +98,10 @@ const Profile: NextPage = () => {
         Perfil do Usuário
       </h1>
 
-      {isLoading && userData?.tipo_cargo === "" ? (
+      {isLoading && userData?.tipo === "" ? (
         <p className="text-gray-600">Carregando informações do usuário...</p>
       ) : (
         <div className="flex items-center space-x-4">
-
           <Image
             src="/perfil.jpeg"
             alt="Imagem de perfil"
@@ -60,14 +110,14 @@ const Profile: NextPage = () => {
             className="rounded-full border border-gray-200"
           />
           <div>
-            <span className="bg-slate-200 text-xs p-0.5 rounded-sm">Id: {userData?.user_id}</span>
-            <h2 className="text-xl font-semibold ">
-              {userData?.username}
-            </h2>
+            <span className="bg-slate-200 text-xs p-0.5 rounded-sm">
+              Id: {userData?.id_pessoa}
+            </span>
+            <h2 className="text-xl font-semibold ">{userData?.nome}</h2>
             <p>{userData?.email}</p>
             <p className="mt-1 text-sm font-bold">
               Tipo de Cadastro:
-              <span className="capitalize font-normal"> {userData?.tipo_cargo}</span>
+              <span className="capitalize font-normal"> {userData?.tipo}</span>
             </p>
           </div>
         </div>
@@ -77,13 +127,13 @@ const Profile: NextPage = () => {
         <h3 className="text-lg font-semibold text-gray-800">
           Informações adicionais
         </h3>
-        {userData?.tipo_cargo === "cliente" && (
+        {userData?.tipo === "cliente" && (
           <div>
-            {/* filtrar fk_id_cliente = userData?.user_id */}
+            {/* filtrar fk_id_cliente = userData?.id_pessoa */}
             <h4 className="text-gray-600">Seus pedidos</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="">
               {pedidos
-                .filter((item) => item.fk_id_cliente === userData?.user_id)
+                .filter((item) => item.fk_id_cliente === userData?.id_pessoa)
                 .map((item) => (
                   <ListPedido
                     key={item.id_pedido}
@@ -95,7 +145,7 @@ const Profile: NextPage = () => {
             </div>
           </div>
         )}
-        {userData?.tipo_cargo === "admin" && (
+        {userData?.tipo === "admin" && (
           <div>
             <h4 className="text-gray-600">Todos os pedidos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -110,12 +160,12 @@ const Profile: NextPage = () => {
             </div>
           </div>
         )}
-        {/* {userData?.tipo_cargo === "barman" && (
+        {/* {userData?.tipo === "barman" && (
           <div>
             <h4 className="text-gray-600">Seus agendamentos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {pedidos
-                .filter((item) => item.fk_id_barman === userData?.user_id)
+                .filter((item) => item.fk_id_barman === userData?.id_pessoa)
                 .map((item) => (
                   <ListPedido
                     key={item.id_pedido}
@@ -127,12 +177,12 @@ const Profile: NextPage = () => {
             </div>
           </div>
         )} */}
-        {/* {userData?.tipo_cargo === "entregador" && (
+        {/* {userData?.tipo === "entregador" && (
           <div>
             <h4 className="text-gray-600">Seus agendamentos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {pedidos
-                .filter((item) => item.fk_id_entregador === userData?.user_id)
+                .filter((item) => item.fk_id_entregador === userData?.id_pessoa)
                 .map((item) => (
                   <ListPedido
                     key={item.id_pedido}

@@ -1,0 +1,36 @@
+# GET NA ROTA /api/pedido
+GET http://localhost:3000/api/pedido
+
+### Get para buscar cliente especifico
+GET http://localhost:3000/api/pedido?id_pessoa=auth0|672a117751b32fa42c7d1983
+
+### Get para buscar id especifico
+GET http://localhost:3000/api/pedido?id=1
+
+### Criar Pedido
+POST http://localhost:3000/api/pedido
+Content-Type: application/json
+
+{
+  "tipo": "pedido",
+  "id_pedido": 10,
+  "data_pedido": "2024-11-11 12:00:00.000",
+  "valor_pedido": 15,
+  "endereco_entrega": "Rua C, 100",
+  "fk_id_cliente": "auth0|672a117751b32fa42c7d1983",
+}
+
+### Criando pedido catalogo
+POST http://localhost:3000/api/pedido
+Content-Type: application/json
+
+{
+  "tipo": "pedido_catalogo",
+  "fk_id_pedido": 467,
+  "itens": [
+    { "id_catalogo": 1 },
+    { "id_catalogo": 1 },
+    { "id_catalogo": 2 } 
+    ]
+}
+

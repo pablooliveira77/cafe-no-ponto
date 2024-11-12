@@ -1,0 +1,37 @@
+# GET NA ROTA /api/catalogo
+GET http://localhost:3000/api/catalogo
+
+### Get para buscar id especifico
+GET http://localhost:3000/api/catalogo?id=10
+
+### Post para criar catalogo
+POST http://localhost:3000/api/catalogo
+Content-Type: application/json
+
+{
+  "id_catalogo": 10,
+  "nome": "Produto teste",
+  "descricao": "Uma descrição bonita e vendedoora para o cliente poder saber como é o café.",
+  "tipo": "Teste",
+  "tamanho": "médio",
+  "imagem": "cappuccino.jpg",
+  "preco": 12
+}
+
+### PUT para atualizar catalogo
+PUT http://localhost:3000/api/catalogo?id=10
+Content-Type: application/json
+
+{
+  "id_catalogo": 10,
+  "nome": "Produto teste",
+  "descricao": "Uma descrição bonita e vendedora para o cliente poder saber como é o café.",
+  "tipo": "Teste",
+  "tamanho": "médio",
+  "imagem": "cappuccino.jpg",
+  "preco": 12
+}
+
+### DELETE para deletar catalogo
+DELETE http://localhost:3000/api/catalogo?id=10
+```
