@@ -51,9 +51,9 @@ class Crud<T> implements CRUD<T> {
 
   async create(data: Partial<T>): Promise<T> {
     const keys = Object.keys(data).filter(
-      (key) => data[key] !== undefined && data[key] !== null
+      (key) => data[key as keyof T] !== undefined && data[key as keyof T] !== null
     );
-    const values = keys.map((key) => data[key]);
+    const values = keys.map((key) => data[key as keyof T]);
     const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
 
     const query = `INSERT INTO ${this.table} (${keys.join(
