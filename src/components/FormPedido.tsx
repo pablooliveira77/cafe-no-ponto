@@ -1,19 +1,11 @@
 import React, { useState } from "react";
 
-// interface Pedido {
-//   id_pedido: number;
-//   data_pedido: string;
-//   valor_pedido: number;
-//   fk_id_cliente: string;
-// }
-
 interface recorrencia {
   id_recorrencia: number;
   data_semana: string[];
   horario_agendamento: string[];
   data_limite: string;
   fk_id_pedido: number;
-  fk_id_notificacao: number;
 }
 
 const semana = [
@@ -47,7 +39,6 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
       .toISOString()
       .split("T")[0],
     fk_id_pedido: 0,
-    fk_id_notificacao: 0,
   });
 
   const handleDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,19 +112,22 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     recorrencia.id_recorrencia = id_recorrencia;
 
     const pedido = {
+      tipo: "pedido",
       id_pedido: id_pedido,
       data_pedido: new Date().toISOString(),
       valor_pedido: handleValor(carrinho),
       fk_id_cliente: user_id,
     };
 
-    const pedido_catalogo = carrinho.flatMap((item) =>
-      Array(item.quantidade).fill({
-        id: Math.floor(Math.random() * 1000),
-        fk_id_pedido: id_pedido,
-        fk_id_catalogo: item.id_catalogo,
-      })
-    );
+    const pedido_catalogo = {
+      tipo: "pedido_catalogo",
+      fk_id_pedido: id_pedido,
+      itens: carrinho.flatMap((item) =>
+        Array(item.quantidade).fill({
+          id_catalogo: item.id_catalogo,
+        })
+      ),
+    };
 
     console.log("Seu Pedido:", pedido);
     console.log("Seu Pedido Catalogo:", pedido_catalogo);
@@ -149,8 +143,8 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
       return;
     }
 
-    // Enviar requisição para a API
-    const response = await fetch("/api/cron", {
+    // Salvar pedido no banco de dados
+    const response_pedido = await fetch("/api/pedido", {
       method: "POST",
       body: JSON.stringify(pedido),
       headers: {
@@ -158,14 +152,53 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
       },
     });
 
+    if (!response_pedido.ok) {
+      alert("Erro ao salvar pedido");
+      return;
+    }
+
+    // Salvar catalogo do pedido no banco de dados
+    const response_catalogo = await fetch("/api/pedido", {
+      method: "POST",
+      body: JSON.stringify(pedido_catalogo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response_catalogo.ok) {
+      alert("Erro ao salvar catalogo do pedido");
+      return;
+    }
+
+    // Salvar recorrencia no banco de dados
+    const response_recorrencia = await fetch("/api/recorrencia", {
+      method: "POST",
+      body: JSON.stringify(recorrencia),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response_recorrencia.ok) {
+      alert("Erro ao salvar recorrencia");
+      return;
+    }
+
+    // Enviar requisição para a API
+    const response = await fetch("/api/cron", {
+      method: "POST",
+      body: JSON.stringify(recorrencia),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
     const data = await response.json();
 
-    console.log("Resposta da API:", data);
+    console.log("Resposta do cron:", data);
 
     if (response.ok) {
-    //   alert(data.message);
-
-    /// LImpar recorrencia
       setRecorrencia({
         id_recorrencia: 0,
         data_semana: [],
@@ -174,7 +207,6 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
           .toISOString()
           .split("T")[0],
         fk_id_pedido: 0,
-        fk_id_notificacao: 0,
       });
     } else {
       alert("Erro ao configurar agendamento");

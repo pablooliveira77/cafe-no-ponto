@@ -4,16 +4,32 @@ import ProductsInitial from "@/components/Products";
 import AddAgendamento from "@/components/AddAgendamento";
 import InfoCart from "@/components/InfoCart";
 import styles from "./page.module.css";
-import { catalogo } from "../app/content";
+// import { catalogo } from "../app/content";
 import { useState, useEffect } from "react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [carrinho, setCarrinho] = useState<
-    { id_catalogo: number; nome: string; preco: number; quantidade: number }[]
+    {
+      id_catalogo: number;
+      nome: string;
+      preco: number;
+      quantidade: number;
+    }[]
   >([]);
   const [alerta, setAlerta] = useState<string | null>(null);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [catalogo, setCatalogo] = useState<
+    {
+      id_catalogo: number;
+      nome: string;
+      descricao: string;
+      tipo: string;
+      tamanho: string;
+      imagem: string;
+      preco: number;
+    }[]
+  >([]);
 
   useEffect(() => {
     const carrinhoLocalstorage = JSON.parse(
@@ -46,11 +62,24 @@ export default function Home() {
       );
       setCarrinho(novoCarrinho);
     }
+
+    const fetchCatalogo = async () => {
+      const response = await fetch("/api/catalogo");
+      if (!response.ok) {
+        return;
+      }
+      const catalogo = await response.json();
+      setCatalogo(catalogo);
+    };
+
+    fetchCatalogo();
   }, []);
 
   const addCarrinho = (id_catalogo: number, nome: string, preco: number) => {
     setCarrinho((carrinho) => {
-      const item_existente = carrinho.find((item) => item.id_catalogo === id_catalogo);
+      const item_existente = carrinho.find(
+        (item) => item.id_catalogo === id_catalogo
+      );
       if (item_existente) {
         return carrinho.map((item) =>
           item.id_catalogo === id_catalogo
