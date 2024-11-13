@@ -160,7 +160,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     const cronResponse = await salvarDados("/api/cron", recorrencia);
 
     if (cronResponse.ok) {
-      resetarForm();
+      await resetarForm();
     } else {
       alert("Erro ao configurar agendamento");
     }
@@ -222,7 +222,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     });
   };
 
-  const resetarForm = () => {
+  const resetarForm = async () => {
     setRecorrencia({
       id_recorrencia: 0,
       data_semana: [],
@@ -236,118 +236,10 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
     // Limpar carrinho
     localStorage.removeItem("carrinho");
+    
+    // atualizar pagina
+    await window.location.reload();
   };
-
-  // const handleSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   setBtn(true);
-  //   setBtnText("Enviando...");
-
-  //   const id_pedido = Math.floor(Math.random() * 1000);
-  //   const id_recorrencia = Math.floor(Math.random() * 1000);
-
-  //   //  Atualizar dados do produto
-  //   recorrencia.fk_id_pedido = id_pedido;
-  //   recorrencia.id_recorrencia = id_recorrencia;
-
-  //   const pedido = {
-  //     tipo: "pedido",
-  //     id_pedido: id_pedido,
-  //     data_pedido: new Date().toISOString(),
-  //     endereco_entrega: endereco,
-  //     valor_pedido: handleValor(carrinho),
-  //     fk_id_cliente: user_id,
-  //   };
-
-  //   const pedido_catalogo = {
-  //     tipo: "pedido_catalogo",
-  //     fk_id_pedido: id_pedido,
-  //     itens: carrinho.flatMap((item) =>
-  //       Array(item.quantidade).fill({
-  //         id_catalogo: item.id_catalogo,
-  //       })
-  //     ),
-  //   };
-
-  //   console.log("Seu Pedido:", pedido);
-  //   console.log("Seu Pedido Catalogo:", pedido_catalogo);
-  //   console.log("Sua Recorrencia:", recorrencia);
-
-  //   if (recorrencia.data_semana.length === 0 || recorrencia.horario_agendamento.length === 0 || endereco === "") {
-  //     if (recorrencia.data_semana.length === 0) {
-  //       alert("Selecione pelo menos um dia da semana");
-  //     }
-  //     if (recorrencia.horario_agendamento.length === 0) {
-  //       alert("Selecione pelo menos um horário");
-  //     }
-  //     if (endereco === "") {
-  //       alert("Informe o endereço de entrega");
-  //     }
-  //     setBtn(false);
-  //     setBtnText("Realizar pedido");
-  //     return;
-  //   }
-
-  //   // Salvar pedido no banco de dados
-  //   const response_pedido = await fetch("/api/pedido", {
-  //     method: "POST",
-  //     body: JSON.stringify(pedido),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   // Salvar catalogo do pedido no banco de dados
-  //   const response_catalogo = await fetch("/api/pedido", {
-  //     method: "POST",
-  //     body: JSON.stringify(pedido_catalogo),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   // Salvar recorrencia no banco de dados
-  //   const response_recorrencia = await fetch("/api/recorrencia", {
-  //     method: "POST",
-  //     body: JSON.stringify(recorrencia),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   if (!response_recorrencia.ok || !response_pedido.ok || !response_catalogo.ok) {
-  //     alert("Erro ao fazer o pedido");
-  //     setBtn(false);
-  //     setBtnText("Realizar pedido");
-  //     return;
-  //   }
-
-  //   // Enviar requisição para a API
-  //   const response = await fetch("/api/cron", {
-  //     method: "POST",
-  //     body: JSON.stringify(recorrencia),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   if (response.ok) {
-  //     setRecorrencia({
-  //       id_recorrencia: 0,
-  //       data_semana: [],
-  //       horario_agendamento: ["07:00"],
-  //       data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
-  //         .toISOString()
-  //         .split("T")[0],
-  //       fk_id_pedido: 0,
-  //     });
-  //     setEndereco("");
-  //     setBtn(false);
-  //     setBtnText("Realizar pedido");
-  //   } else {
-  //     alert("Erro ao configurar agendamento");
-  //   }
-  // };
 
   return (
     <div>
