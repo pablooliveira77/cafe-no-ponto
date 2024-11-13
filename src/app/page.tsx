@@ -4,16 +4,32 @@ import ProductsInitial from "@/components/Products";
 import AddAgendamento from "@/components/AddAgendamento";
 import InfoCart from "@/components/InfoCart";
 import styles from "./page.module.css";
-import { cafe } from "../app/content";
+// import { catalogo } from "../app/content";
 import { useState, useEffect } from "react";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState(0);
   const [carrinho, setCarrinho] = useState<
-    { id_cafe: number; nome: string; preco: number; quantidade: number }[]
+    {
+      id_catalogo: number;
+      nome: string;
+      preco: number;
+      quantidade: number;
+    }[]
   >([]);
   const [alerta, setAlerta] = useState<string | null>(null);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [catalogo, setCatalogo] = useState<
+    {
+      id_catalogo: number;
+      nome: string;
+      descricao: string;
+      tipo: string;
+      tamanho: string;
+      imagem: string;
+      preco: number;
+    }[]
+  >([]);
 
   useEffect(() => {
     const carrinhoLocalstorage = JSON.parse(
@@ -22,20 +38,20 @@ export default function Home() {
 
     if (carrinhoLocalstorage.length > 0) {
       const novoCarrinho: {
-        id_cafe: number;
+        id_catalogo: number;
         nome: string;
         preco: number;
         quantidade: number;
       }[] = [];
       carrinhoLocalstorage.forEach(
         (item: {
-          id_cafe: number;
+          id_catalogo: number;
           nome: string;
           preco: number;
           quantidade: number;
         }) => {
           const item_existente = novoCarrinho.find(
-            (i) => i.id_cafe === item.id_cafe
+            (i) => i.id_catalogo === item.id_catalogo
           );
           if (item_existente) {
             item_existente.quantidade += item.quantidade;
@@ -46,25 +62,38 @@ export default function Home() {
       );
       setCarrinho(novoCarrinho);
     }
+
+    const fetchCatalogo = async () => {
+      const response = await fetch("/api/catalogo");
+      if (!response.ok) {
+        return;
+      }
+      const catalogo = await response.json();
+      setCatalogo(catalogo);
+    };
+
+    fetchCatalogo();
   }, []);
 
-  const addCarrinho = (id_cafe: number, nome: string, preco: number) => {
+  const addCarrinho = (id_catalogo: number, nome: string, preco: number) => {
     setCarrinho((carrinho) => {
-      const item_existente = carrinho.find((item) => item.id_cafe === id_cafe);
+      const item_existente = carrinho.find(
+        (item) => item.id_catalogo === id_catalogo
+      );
       if (item_existente) {
         return carrinho.map((item) =>
-          item.id_cafe === id_cafe
+          item.id_catalogo === id_catalogo
             ? { ...item, quantidade: item.quantidade + 1 }
             : item
         );
       } else {
-        return [...carrinho, { id_cafe, nome, preco, quantidade: 1 }];
+        return [...carrinho, { id_catalogo, nome, preco, quantidade: 1 }];
       }
     });
 
     localStorage.setItem(
       "carrinho",
-      JSON.stringify([...carrinho, { id_cafe, nome, preco, quantidade: 1 }])
+      JSON.stringify([...carrinho, { id_catalogo, nome, preco, quantidade: 1 }])
     );
 
     setAlerta(nome + " adicionado ao carrinho");
@@ -82,7 +111,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div className="py-2 bg-white shadow-lg rounded-lg">
+        <div className="pt-2 bg-white shadow-lg rounded-lg">
           <div className="flex justify-around mb-2 border-b-2 border-gray-200">
             <button
               className={`px-4 py-2 text-lg font-semibold ${
@@ -109,7 +138,7 @@ export default function Home() {
           {/* Renderizando o conteúdo da aba ativa */}
           <div>
             {activeTab === 0 && (
-              <div className=" bg-black p-6">
+              <div className=" bg-black p-6 min-h-screen">
                 <h1 className="text-2xl font-bold text-center mb-6 text-coffe">
                   Cardápio Digital
                 </h1>
@@ -120,30 +149,39 @@ export default function Home() {
                     {alerta}
                   </div>
                 )}
+                {catalogo.length > 0 ? (
+                  <div>
+                    {/* Exibir o carrinho ou informações do carrinho */}
+                    <div className="bg-white p-4 rounded shadow-md text-center mb-6">
+                      <InfoCart
+                        carrinho={carrinho}
+                        setCarrinho={setCarrinho}
+                        handlebtn={handleFinalizarCompra}
+                      />
+                    </div>
 
-                {/* Exibir o carrinho ou informações do carrinho */}
-                <div className="bg-white p-4 rounded shadow-md text-center mb-6">
-                  <InfoCart
-                    carrinho={carrinho}
-                    setCarrinho={setCarrinho}
-                    handlebtn={handleFinalizarCompra}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {cafe.map((item) => (
-                    <ProductsInitial
-                      key={item.id_cafe}
-                      item={item}
-                      addCarrinho={addCarrinho}
-                    />
-                  ))}
-                </div>
+                    <div id="cardapio" className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                      {catalogo.map((item) => (
+                        <ProductsInitial
+                          key={item.id_catalogo}
+                          item={item}
+                          addCarrinho={addCarrinho}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-white">
+                    <h1 className="text-2xl font-bold">
+                      Carregando Produtos...
+                    </h1>
+                  </div>
+                )}
               </div>
             )}
             {activeTab === 1 && (
               <div className=" bg-black p-6">
-                <h1 className="text-2xl font-bold text-center mb-6 text-white">
+                <h1 className="text-2xl font-bold text-center mb-6 text-coffe">
                   Configurar Agendamento
                 </h1>
                 <AddAgendamento />

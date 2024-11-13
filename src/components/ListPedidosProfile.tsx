@@ -1,78 +1,96 @@
-import { cafe, cliente } from "@/app/content";
+// import UtilsSwiss from '@/utils/func/swiss'
 
 interface Pedido {
   id_pedido: number;
   data_pedido: string;
   valor_pedido: number;
-  data_semana: string[];
+  endereco_entrega: string;
+  data_semana: string;
   horario_agendamento: string[];
-  isActive: boolean;
-  fk_id_barman: string;
-  fk_id_entregador: string;
+  data_limite: string;
   fk_id_cliente: string;
-  fk_id_cafe: number[];
+  itens_catalogo: [
+    {
+      id_catalogo: number;
+      nome: string;
+      tipo: string;
+      tamanho: string;
+      imagem: string;
+    },
+    {
+      id_catalogo: number;
+      nome: string;
+      tipo: string;
+      tamanho: string;
+      imagem: string;
+    }
+  ];
 }
-
-
-// id_pedido: 1,
-// data_pedido: "2024-10-04T08:00:00",
-// valor_pedido: 12,
-// data_semana: ['1', '3', '5'],
-// isActive: true,
-// horario_agendamento: ['07:00', '11:00'],
-// fk_id_barman: "auth0|672a206b620fc2be082a8c27",
-// fk_id_entregador: 2,
-// fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
-// fk_id_cafe: [1],
 
 interface ListPedidoProps {
   pedido: Pedido;
 }
 
 const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
+  // const { getData } = new UtilsSwiss();
+
+  // const formatarData = async (data: string) => {
+  //   const data_formatada = await getData(data)
+  //   return data_formatada
+  // }
+
   return (
-    <li className="flex justify-between gap-x-6 py-5 ">
-      <div className="flex min-w-0 gap-x-4">
-        <div className="min-w-0 flex-auto">
-          {cafe.map((i) => {
-            if (Array.isArray(pedido.fk_id_cafe) && pedido.fk_id_cafe.includes(i.id_cafe)) {
-              return (
-                <div key={i.id_cafe} className="min-w-0 flex-auto">
-                  <p className="text-sm font-semibold leading-6 text-coffe">
-                    {i.nome}
-                  </p>
-                  <p className="mt-1 truncate text-xs leading-5">
-                    Tipo: {i.tipo} - Tamanho: {i.tamanho}
-                  </p>
-                </div>
-              );
-            }
-          })}
-        </div>
+    <div className="bg-white p-4 mb-4 rounded-lg shadow border">
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-xl font-semibold text-coffe">
+          Pedido #{pedido.id_pedido}
+        </h2>
+        <span className="text-gray-500">
+          <strong>Valor Total:</strong> R${pedido.valor_pedido.toFixed(2)}
+        </span>
       </div>
-      <div className="shrink-0 sm:flex sm:flex-col sm:items-end">
-        <p className="text-sm leading-6 text-coffe">
-          R${pedido.valor_pedido},00
+      <div className="text-gray-600 mb-2">
+        <div className="flex justify-between items-center mb-2">
+          <p>
+            <strong>Endereço de Entrega:</strong> {pedido.endereco_entrega}
+          </p>
+          <span className="text-gray-500">
+            <strong>Data:</strong> {pedido.data_pedido}
+          </span>
+        </div>
+        <p>
+          <strong>Dias de Entrega:</strong> {pedido.data_semana}
         </p>
-        <p className="mt-1 text-xs leading-5 ">
-          <time dateTime={pedido.data_pedido}>
-            {new Date(pedido.data_pedido).toLocaleString()}
-          </time>
+        <p>
+          <strong>Horários de Entrega:</strong>{" "}
+          {pedido.horario_agendamento.join(", ")}
         </p>
-        {cliente.map((i) => {
-          if (i.id_cliente === pedido.fk_id_cliente) {
-            return (
-              <div key={i.id_cliente} className="flex flex-col items-end">
-                <p className="mt-1 truncate text-xs leading-5 ">
-                  Entrega: {i.endereco_entrega}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold mt-2 mb-2 text-gray-700">
+          Itens do Catálogo
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {pedido.itens_catalogo.map((item, index) => (
+            <div
+              key={index}
+              className="border border-gray-300 rounded p-3 text-gray-800"
+            >
+              <div className="border border-gray-300 rounded p-3">
+                <h4 className="font-semibold text-coffe">{item.nome}</h4>
+                <p>
+                  <strong>Tipo:</strong> {item.tipo}
+                </p>
+                <p>
+                  <strong>Tamanho:</strong> {item.tamanho}
                 </p>
               </div>
-            );
-          }
-        })}
+            </div>
+          ))}
+        </div>
       </div>
-    </li>
+    </div>
   );
-}
+};
 
 export default ListPedido;

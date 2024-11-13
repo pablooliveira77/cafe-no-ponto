@@ -1,6 +1,51 @@
-export const cafe = [
+export const pessoas = [
   {
-    id_cafe: 1,
+    id_pessoa: "auth0|672a117751b32fa42c7d1983",
+    nome: "Pablo",
+    numero: "5561991936667",
+    email: "pablo.oliveira77@outlook.com.br",
+    tipo: "cliente",
+  },
+  {
+    id_pessoa: "auth0|672a206b620fc2be082a8c27",
+    nome: "Pablo Barman",
+    numero: "5561991936667",
+    email: "pablolimadeoliveira055@gmail.com",
+    tipo: "barista",
+  },
+  {
+    id_pessoa: "auth0|672a22e5620fc2be082a8db8",
+    nome: "Pablo Entregador",
+    numero: "5561991936668",
+    email: "pablo@plenitudex.com",
+    tipo: "entregador",
+  },
+];
+
+export const cliente = [
+  {
+    id_cliente: "auth0|672a117751b32fa42c7d1983",
+    fk_id_pessoa: "auth0|672a117751b32fa42c7d1983",
+  },
+];
+
+export const barista = [
+  {
+    id_barista: "auth0|672a206b620fc2be082a8c27",
+    fk_id_pessoa: "auth0|672a206b620fc2be082a8c27",
+  },
+];
+
+export const entregador = [
+  {
+    id_entregador: "auth0|672a22e5620fc2be082a8db8",
+    fk_id_pessoa: "auth0|672a22e5620fc2be082a8db8",
+  },
+];
+
+export const catalogo = [
+  {
+    id_catalogo: 1,
     nome: "Cappuccino Clássico",
     descricao:
       "Uma deliciosa combinação de café expresso encorpado, leite cremoso e uma generosa camada de espuma. Perfeito para quem busca equilíbrio entre suavidade e intensidade.",
@@ -10,7 +55,7 @@ export const cafe = [
     preco: 12,
   },
   {
-    id_cafe: 2,
+    id_catalogo: 2,
     nome: "Latte Suave",
     descricao:
       "O nosso Latte é uma verdadeira experiência de aconchego. Combinamos o sabor intenso do expresso com leite vaporizado, resultando em uma bebida leve e reconfortante.",
@@ -20,7 +65,7 @@ export const cafe = [
     preco: 10,
   },
   {
-    id_cafe: 3,
+    id_catalogo: 3,
     nome: "Espresso Intenso",
     descricao:
       "O verdadeiro espresso italiano, preparado com grãos selecionados e torrados à perfeição. Um sabor rico e marcante que desperta os sentidos a cada gole.",
@@ -30,7 +75,7 @@ export const cafe = [
     preco: 8,
   },
   {
-    id_cafe: 4,
+    id_catalogo: 4,
     nome: "Mocha Encantado",
     descricao:
       "Uma combinação irresistível de café expresso, leite vaporizado e chocolate. A bebida perfeita para os apaixonados por café e chocolate.",
@@ -40,7 +85,7 @@ export const cafe = [
     preco: 15,
   },
   {
-    id_cafe: 5,
+    id_catalogo: 5,
     nome: "Macchiato Delicado",
     descricao:
       "O Macchiato é uma bebida simples e sofisticada, que combina a intensidade do café expresso com uma pequena quantidade de leite vaporizado. Uma experiência única para os apreciadores de café.",
@@ -50,7 +95,7 @@ export const cafe = [
     preco: 10,
   },
   {
-    id_cafe: 6,
+    id_catalogo: 6,
     nome: "Café com Leite",
     descricao:
       "O clássico café com leite, preparado com café expresso e leite vaporizado. Uma bebida suave e reconfortante, perfeita para qualquer momento do dia.",
@@ -61,171 +106,84 @@ export const cafe = [
   },
 ];
 
-export const pedido = [
+export const pedidos = [
   {
     id_pedido: 1,
-    data_pedido: "2024-10-04T08:00:00",
-    valor_pedido: 12,
-    data_semana: ['1', '3', '5'],
-    isActive: true,
-    horario_agendamento: ['07:00', '11:00'],
-    fk_id_barman: "auth0|672a206b620fc2be082a8c27",
-    fk_id_entregador: "auth0|672a22e5620fc2be082a8db8",
-    fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
-    fk_id_cafe: [1],
+    data_pedido: "2024-11-08T16:06:55.902Z",
+    valor_pedido: 15,
+    endereco_entrega: "Rua A, 100",
+    fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
   },
   {
     id_pedido: 2,
-    data_pedido: "2024-10-04T09:00:00",
-    valor_pedido: 10,
-    data_semana: ['1', '2', '6'],
-    isActive: true,
-    horario_agendamento: ['16:19', '20:20'],
-    fk_id_barman: "auth0|672a206b620fc2be082a8c27",
-    fk_id_entregador: "auth0|672a22e5620fc2be082a8db8",
+    data_pedido: "2024-11-08T16:06:55.902Z",
+    valor_pedido: 25,
+    endereco_entrega: "Rua B, 200",
     fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
-    fk_id_cafe: [2],
   },
   {
     id_pedido: 3,
-    data_pedido: "2024-10-04T10:00:00",
-    valor_pedido: 15,
-    data_semana: ['1'],
-    isActive: false,
-    horario_agendamento: ['10:19', '15:20'],
-    fk_id_barman: "auth0|672a206b620fc2be082a8c27",
-    fk_id_entregador: "auth0|672a",
-    fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
-    fk_id_cafe: [3],
-  },
-];
-
-export const cliente = [
-  {
-    id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
-    nome: "Pablo",
-    numero: "5561991936667",
-    email: "pablolimadeoliveira77@gmail.com",
-    endereco_entrega: "Rua A, 123",
-    created_at: "2024-09-01T08:00:00",
-  },
-  {
-    id_cliente: "auth0|672a117751b32fa42c7d1983",
-    nome: "pablo cliente",
-    numero: "5561991936667",
-    email: "pablo.oliveira77@outlook.com.br",
-    endereco_entrega: "Rua B, 456",
-    created_at: "2024-09-05T09:00:00",
-  },
-  {
-    id_cliente: 'auth0|670a',
-    nome: "Pedro Santos",
-    numero: "555-9876",
-    email: "pedro.santos@example.com",
-    endereco_entrega: "Rua C, 789",
-    created_at: "2024-09-10T10:00:00",
-  },
-];
-
-export const barman = [
-  {
-    id_barman: "auth0|672a206b620fc2be082a8c27",
-    nome: "Pablo Barman",
-    numero: "5561991936667",
-    turno: "Manhã",
-  },
-  {
-    id_barman: "auth0|671a",
-    nome: "Fernanda Lima",
-    numero: "5561991936667",
-    turno: "Tarde",
-  },
-  {
-    id_barman: "auth0|672a",
-    nome: "Lucas Pereira",
-    numero: "5561991936667",
-    turno: "Noite",
-  },
-];
-
-export const entregador = [
-  {
-    id_entregador: "auth0|672a22e5620fc2be082a8db8",
-    nome: "Pablo Entregador",
-    numero: "5561991936668",
-    status: "ativo",
-  },
-  {
-    id_entregador: "auth0|672a",
-    nome: "Mariana Nunes",
-    numero: "5561991936668",
-    status: "ativo",
-  },
-  {
-    id_entregador: "auth0|672b",
-    nome: "Claudio Ribeiro",
-    numero: "5561991936668",
-    status: "inativo",
-  },
-];
-
-export const assinatura = [
-  {
-    id_assinatura: 1,
-    data_semana: ['1', '3', '5'],
-    isActive: true,
-    horario_agendamento: ['07:00', '11:00'],
+    data_pedido: '2024-11-08T16:06:55.902Z',
+    valor_pedido: 30,
+    endereco_entrega: "Rua C, 300",
     fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
-    fk_id_pedido: 1,
   },
-  {
-    id_assinatura: 2,
-    data_semana: ['1', '2', '6'],
-    isActive: true,
-    horario_agendamento: ['16:19', '20:20'],
-    fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
-    fk_id_pedido: 3,
-  },
-  {
-    id_assinatura: 3,
-    data_semana: ['1'],
-    isActive: false,
-    horario_agendamento: ['10:19', '15:20'],
-    fk_id_cliente: "auth0|6728d160d39ec3ae38e85ec2",
-    fk_id_pedido: 2,
-  },
+];
+
+export const pedidoCatalogo = [
+  { id: 1, fk_id_pedido: 1, fk_id_catalogo: 1 },
+  { id: 2, fk_id_pedido: 2, fk_id_catalogo: 2 },
+  { id: 3, fk_id_pedido: 3, fk_id_catalogo: 3 },
 ];
 
 export const notificacao = [
   {
-    id: 1,
+    id_notificacao: 1,
     tipo: "cliente",
     data_hora: "2024-10-04T08:05:00",
-    fk_id_entregador: null,
-    fk_id_barman: null,
-    fk_id_pedido: 2,
-    fk_id_cliente: "auth0|672a117751b32fa42c7d1983",
+    fk_id_pessoa: "auth0|672a117751b32fa42c7d1983",
+    fk_id_recorrencia: 1,
     created_at: "2024-10-04T08:00:00",
   },
   {
-    id: 2,
+    id_notificacao: 2,
     tipo: "barman",
     data_hora: "2024-10-04T09:05:00",
-    fk_id_entregador: null,
-    fk_id_barman: "auth0|672a206b620fc2be082a8c27",
-    fk_id_pedido: 2,
-    fk_id_cliente: null,
+    fk_id_pessoa: "auth0|672a206b620fc2be082a8c27",
+    fk_id_recorrencia: 2,
     created_at: "2024-10-04T09:00:00",
   },
   {
-    id: 3,
+    id_notificacao: 3,
     tipo: "entregador",
     data_hora: "2024-10-04T10:05:00",
-    fk_id_entregador: "auth0|672a22e5620fc2be082a8db8",
-    fk_id_barman: null,
-    fk_id_pedido: 3,
-    fk_id_cliente: null,
+    fk_id_pessoa: "auth0|672a22e5620fc2be082a8db8",
+    fk_id_recorrencia: 3,
     created_at: "2024-10-04T10:00:00",
+  },
+];
+
+export const recorrencias = [
+  {
+    id_recorrencia: 1,
+    data_semana: ["1", "3"],
+    horario_agendamento: ["10:00", "14:00"],
+    data_limite: new Date("2023-12-01"),
+    fk_id_pedido: 1,
+  },
+  {
+    id_recorrencia: 2,
+    data_semana: ["2", "4"],
+    horario_agendamento: ["11:00", "15:00"],
+    data_limite: new Date("2023-12-02"),
+    fk_id_pedido: 2,
+  },
+  {
+    id_recorrencia: 3,
+    data_semana: ["3", "5"],
+    horario_agendamento: ["12:00", "16:00"],
+    data_limite: new Date("2023-12-03"),
+    fk_id_pedido: 3,
   },
 ];
 

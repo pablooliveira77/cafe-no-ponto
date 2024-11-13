@@ -7,7 +7,7 @@ const AgendamentoForm: React.FC = () => {
 
   
   const [carrinho, setCarrinho] = useState<
-  { id_cafe: number; nome: string; preco: number; quantidade: number }[]
+  { id_catalogo: number; nome: string; preco: number; quantidade: number }[]
 >([]);
 
 const { user } = useUser();
@@ -19,20 +19,20 @@ useEffect(() => {
 
   if (carrinhoLocalstorage.length > 0) {
     const novoCarrinho: {
-      id_cafe: number;
+      id_catalogo: number;
       nome: string;
       preco: number;
       quantidade: number;
     }[] = [];
     carrinhoLocalstorage.forEach(
       (item: {
-        id_cafe: number;
+        id_catalogo: number;
         nome: string;
         preco: number;
         quantidade: number;
       }) => {
         const item_existente = novoCarrinho.find(
-          (i) => i.id_cafe === item.id_cafe
+          (i) => i.id_catalogo === item.id_catalogo
         );
         if (item_existente) {
           item_existente.quantidade += item.quantidade;

@@ -1,0 +1,35 @@
+# GET NA ROTA /api/pessoa
+GET http://localhost:3000/api/pessoa
+
+### Get para buscar email especifico
+GET http://localhost:3000/api/pessoa?email=pablo.oliveira77@outlook.com.br
+
+### Get para buscar id especifico
+GET http://localhost:3000/api/pessoa?id=auth0|672a22e5620fc2be082a8db8
+
+### Post para criar pessoa
+POST http://localhost:3000/api/pessoa
+Content-Type: application/json
+
+{
+  "id_pessoa": "auth0|672a22e5620fc2be082a8db",
+  "nome": "Pablo Admin",
+  "numero": "556191936667",
+  "email": "pablolimadeoliveira77@gmail.com",
+  "tipo": "admin"
+}
+
+### PUT para atualizar pessoa
+PUT http://localhost:3000/api/pessoa?id=auth0|672a22e5620fc2be082a8db
+Content-Type: application/json
+
+{
+  "nome": "Pablo Adm",
+  "numero": "556191936667",
+  "email": "pablolimadeoliveira77@gmail.com",
+  "tipo": "admin"
+}
+
+### DELETE para deletar pessoa
+DELETE http://localhost:3000/api/pessoa?id=auth0|672a22e5620fc2be082a8db
+```

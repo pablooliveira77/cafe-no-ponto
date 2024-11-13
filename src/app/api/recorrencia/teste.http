@@ -1,0 +1,36 @@
+# GET NA ROTA /api/recorrencia
+GET http://localhost:3000/api/recorrencia
+
+### Get para buscar email especifico
+GET http://localhost:3000/api/recorrencia?fk_id_pedido=1
+
+### Get para buscar id especifico
+GET http://localhost:3000/api/recorrencia?id=1
+
+### Post para criar recorrencia
+POST http://localhost:3000/api/recorrencia
+Content-Type: application/json
+
+{
+  "id_recorrencia": 6,
+  "data_semana": ["1", "3"],
+  "horario_agendamento": ["10:00", "03:00"],
+  "data_limite": "2023-12-01T03:00:00.000Z",
+  "fk_id_pedido": 4
+}
+
+### PUT para atualizar recorrencia
+PUT http://localhost:3000/api/recorrencia?id=5
+Content-Type: application/json
+
+{
+  "id_recorrencia": 5,
+  "data_semana": ["1", "4"],
+  "horario_agendamento": ["11:00", "03:00"],
+  "data_limite": "2023-12-01T03:00:00.000Z",
+  "fk_id_pedido": 10
+}
+
+### DELETE para deletar recorrencia
+DELETE http://localhost:3000/api/recorrencia?id=6
+```

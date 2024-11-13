@@ -4,68 +4,68 @@ import { useState } from "react";
 import {
   Dialog,
   DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Popover,
-  PopoverButton,
+  // Disclosure,
+  // DisclosureButton,
+  // DisclosurePanel,
+  // Popover,
+  // PopoverButton,
   PopoverGroup,
-  PopoverPanel,
+  // PopoverPanel,
 } from "@headlessui/react";
 import {
-  ArrowPathIcon,
+  // ArrowPathIcon,
   Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
+  // ChartPieIcon,
+  // CursorArrowRaysIcon,
+  // FingerPrintIcon,
+  // SquaresPlusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-  PhoneIcon,
-  PlayCircleIcon,
-} from "@heroicons/react/20/solid";
+// import {
+//   ChevronDownIcon,
+//   PhoneIcon,
+//   PlayCircleIcon,
+// } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import ProfileMenu from "./ProfileMenu";
 
-const products = [
-  {
-    name: "Analytics",
-    description: "Get a better understanding of your traffic",
-    href: "#",
-    icon: ChartPieIcon,
-  },
-  {
-    name: "Engagement",
-    description: "Speak directly to your customers",
-    href: "#",
-    icon: CursorArrowRaysIcon,
-  },
-  {
-    name: "Security",
-    description: "Your customers’ data will be safe and secure",
-    href: "#",
-    icon: FingerPrintIcon,
-  },
-  {
-    name: "Integrations",
-    description: "Connect with third-party tools",
-    href: "#",
-    icon: SquaresPlusIcon,
-  },
-  {
-    name: "Automations",
-    description: "Build strategic funnels that will convert",
-    href: "#",
-    icon: ArrowPathIcon,
-  },
-];
-const callsToAction = [
-  { name: "Watch demo", href: "#", icon: PlayCircleIcon },
-  { name: "Contact sales", href: "#", icon: PhoneIcon },
-];
+// const products = [
+//   {
+//     name: "Analytics",
+//     description: "Get a better understanding of your traffic",
+//     href: "#",
+//     icon: ChartPieIcon,
+//   },
+//   {
+//     name: "Engagement",
+//     description: "Speak directly to your customers",
+//     href: "#",
+//     icon: CursorArrowRaysIcon,
+//   },
+//   {
+//     name: "Security",
+//     description: "Your customers’ data will be safe and secure",
+//     href: "#",
+//     icon: FingerPrintIcon,
+//   },
+//   {
+//     name: "Integrations",
+//     description: "Connect with third-party tools",
+//     href: "#",
+//     icon: SquaresPlusIcon,
+//   },
+//   {
+//     name: "Automations",
+//     description: "Build strategic funnels that will convert",
+//     href: "#",
+//     icon: ArrowPathIcon,
+//   },
+// ];
+// const callsToAction = [
+//   { name: "Watch demo", href: "#", icon: PlayCircleIcon },
+//   { name: "Contact sales", href: "#", icon: PhoneIcon },
+// ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -100,7 +100,7 @@ export default function Header() {
           </button>
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          <Popover className="relative">
+          {/* <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm font-semibold leading-6 ">
               Product
               <ChevronDownIcon
@@ -154,16 +154,19 @@ export default function Header() {
                 ))}
               </div>
             </PopoverPanel>
-          </Popover>
+          </Popover> */}
 
-          <a href="#" className="text-sm font-semibold leading-6 ">
-            Features
+          <a
+            href="/#cardapio"
+            className="text-sm font-semibold leading-6 transition-all"
+          >
+            Cardapio
           </a>
           <a href="#" className="text-sm font-semibold leading-6 ">
-            Marketplace
+            Agendamentos
           </a>
           <a href="#" className="text-sm font-semibold leading-6 ">
-            Company
+            Sobre nós
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -209,7 +212,7 @@ export default function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
+                {/* <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7  hover:bg-coffe hover:text-white">
                     Product
                     <ChevronDownIcon
@@ -229,24 +232,25 @@ export default function Header() {
                       </DisclosureButton>
                     ))}
                   </DisclosurePanel>
-                </Disclosure>
+                </Disclosure> */}
                 <a
-                  href="#"
+                  href="/#cardapio"
+                  onClick={() => setMobileMenuOpen(false)}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7  hover:bg-coffe hover:text-white"
                 >
-                  Features
+                  Cardapio
                 </a>
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7  hover:bg-coffe hover:text-white"
                 >
-                  Marketplace
+                  Agendamentos
                 </a>
                 <a
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7  hover:bg-coffe hover:text-white"
                 >
-                  Company
+                  Sobre nós
                 </a>
               </div>
               <div className="py-6">

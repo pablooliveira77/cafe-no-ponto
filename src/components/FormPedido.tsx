@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 
-interface Pedido {
-  id_pedido: number;
-  data_pedido: string;
-  valor_pedido: number;
+interface recorrencia {
+  id_recorrencia: number;
   data_semana: string[];
   horario_agendamento: string[];
-  isActive: boolean;
-  fk_id_barman: string;
-  fk_id_entregador: string;
-  fk_id_cliente: string;
-  fk_id_cafe: number[];
+  data_limite: string;
+  fk_id_pedido: number;
 }
 
 const semana = [
@@ -24,7 +19,7 @@ const semana = [
 ];
 
 interface CarrinhoItem {
-  id_cafe: number;
+  id_catalogo: number;
   nome: string;
   preco: number;
   quantidade: number;
@@ -36,22 +31,22 @@ interface FormPedidoProps {
 }
 
 export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
-  const [pedido, setPedido] = useState<Pedido>({
-    id_pedido: 0,
-    data_pedido: "",
-    valor_pedido: 0,
+  const [recorrencia, setRecorrencia] = useState<recorrencia>({
+    id_recorrencia: 0,
     data_semana: [],
     horario_agendamento: ["07:00"],
-    isActive: true,
-    fk_id_barman: "",
-    fk_id_entregador: "",
-    fk_id_cliente: user_id,
-    fk_id_cafe: [],
+    data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
+      .toISOString()
+      .split("T")[0],
+    fk_id_pedido: 0,
   });
+  const [endereco, setEndereco] = useState("");
+  const [btn, setBtn] = useState(false);
+  const [btnText, setBtnText] = useState("Realizar pedido");
 
   const handleDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const day = event.target.value;
-    setPedido((prev) => ({
+    setRecorrencia((prev) => ({
       ...prev,
       data_semana: prev.data_semana.includes(day)
         ? prev.data_semana.filter((d) => d !== day)
@@ -65,7 +60,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
   ) => {
     const newTime = event.target.value;
 
-    setPedido((prev) => {
+    setRecorrencia((prev) => {
       const updatedTimes = [...prev.horario_agendamento];
       updatedTimes[index] = newTime;
       return { ...prev, horario_agendamento: updatedTimes };
@@ -73,14 +68,14 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
   };
 
   const addNewTime = () => {
-    setPedido((prev) => ({
+    setRecorrencia((prev) => ({
       ...prev,
       horario_agendamento: [...prev.horario_agendamento, ""],
     }));
   };
 
   const removeTime = (index: number) => {
-    setPedido((prev) => ({
+    setRecorrencia((prev) => ({
       ...prev,
       horario_agendamento: prev.horario_agendamento.filter(
         (_, i) => i !== index
@@ -88,8 +83,12 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     }));
   };
 
-  const handleIsActiveChange = () => {
-    setPedido((prev) => ({ ...prev, isActive: !prev.isActive }));
+  const handleDataLimite = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const data = event.target.value;
+    setRecorrencia((prev) => ({
+      ...prev,
+      data_limite: data,
+    }));
   };
 
   const handleValor = (cart_total: CarrinhoItem[]): number => {
@@ -98,8 +97,8 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
         acc +
         item.preco *
           item.quantidade *
-          pedido.data_semana.length *
-          pedido.horario_agendamento.length,
+          recorrencia.data_semana.length *
+          recorrencia.horario_agendamento.length,
       0
     );
 
@@ -108,58 +107,138 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const id_pedido = Math.floor(Math.random() * 1000);
+    updateButtonState(true, "Enviando...");
 
-    //  Atualizar dados do produto
-    pedido.id_pedido = id_pedido;
-    pedido.fk_id_cliente = user_id;
-    pedido.data_pedido = new Date().toISOString();
-    pedido.valor_pedido = handleValor(carrinho);
-    pedido.fk_id_cafe = carrinho.map((item) => item.id_cafe);
+    const id_pedido = Math.floor(Math.random() * 1000);
+    const id_recorrencia = Math.floor(Math.random() * 1000);
+
+    atualizarDadosRecorrencia(id_pedido, id_recorrencia);
+
+    const pedido = criarPedido(id_pedido);
+    const pedido_catalogo = criarPedidoCatalogo(id_pedido);
 
     console.log("Seu Pedido:", pedido);
+    console.log("Seu Pedido Catalogo:", pedido_catalogo);
+    console.log("Sua Recorrencia:", recorrencia);
 
-    if (pedido.data_semana.length === 0) {
-      alert("Selecione pelo menos um dia da semana");
+    if (!validarDados()) {
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    if (pedido.horario_agendamento.length === 0) {
-      alert("Adicione pelo menos um horário");
+    // Executa as requisições em sequência, uma após a outra
+    const pedidoResponse = await salvarDados("/api/pedido", pedido);
+    if (!pedidoResponse.ok) {
+      alert("Erro ao fazer o pedido");
+      updateButtonState(false, "Realizar pedido");
       return;
     }
 
-    // Enviar requisição para a API
-    const response = await fetch("/api/cron", {
-      method: "POST",
-      body: JSON.stringify(pedido),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const catalogoResponse = await salvarDados("/api/pedido", pedido_catalogo);
+    if (!catalogoResponse.ok) {
+      alert("Erro ao fazer o pedido no catálogo");
+      updateButtonState(false, "Realizar pedido");
+      return;
+    }
 
-    const data = await response.json();
+    const recorrenciaResponse = await salvarDados(
+      "/api/recorrencia",
+      recorrencia
+    );
+    if (!recorrenciaResponse.ok) {
+      alert("Erro ao salvar a recorrência");
+      updateButtonState(false, "Realizar pedido");
+      return;
+    }
 
-    console.log("Resposta da API:", data);
+    if (!pedidoResponse.ok || !catalogoResponse.ok || !recorrenciaResponse.ok) {
+      alert("Erro ao fazer o pedido");
+      updateButtonState(false, "Realizar pedido");
+      return;
+    }
 
-    if (response.ok) {
-      alert(data.message);
+    const cronResponse = await salvarDados("/api/cron", recorrencia);
 
-      setPedido({
-        id_pedido: 0,
-        data_pedido: "",
-        valor_pedido: 0,
-        data_semana: [],
-        horario_agendamento: [],
-        isActive: true,
-        fk_id_barman: "",
-        fk_id_entregador: "",
-        fk_id_cliente: "",
-        fk_id_cafe: [],
-      });
+    if (cronResponse.ok) {
+      await resetarForm();
     } else {
       alert("Erro ao configurar agendamento");
     }
+
+    updateButtonState(false, "Realizar pedido");
+  };
+
+  const updateButtonState = (isDisabled: boolean, text: string) => {
+    setBtn(isDisabled);
+    setBtnText(text);
+  };
+
+  const atualizarDadosRecorrencia = (
+    id_pedido: number,
+    id_recorrencia: number
+  ) => {
+    recorrencia.fk_id_pedido = id_pedido;
+    recorrencia.id_recorrencia = id_recorrencia;
+  };
+
+  const criarPedido = (id_pedido: number) => ({
+    tipo: "pedido",
+    id_pedido,
+    data_pedido: new Date().toISOString(),
+    endereco_entrega: endereco,
+    valor_pedido: handleValor(carrinho),
+    fk_id_cliente: user_id,
+  });
+
+  const criarPedidoCatalogo = (id_pedido: number) => ({
+    tipo: "pedido_catalogo",
+    fk_id_pedido: id_pedido,
+    itens: carrinho.flatMap((item) =>
+      Array(item.quantidade).fill({ id_catalogo: item.id_catalogo })
+    ),
+  });
+
+  const validarDados = () => {
+    if (recorrencia.data_semana.length === 0) {
+      alert("Selecione pelo menos um dia da semana");
+      return false;
+    }
+    if (recorrencia.horario_agendamento.length === 0) {
+      alert("Selecione pelo menos um horário");
+      return false;
+    }
+    if (endereco === "") {
+      alert("Informe o endereço de entrega");
+      return false;
+    }
+    return true;
+  };
+
+  const salvarDados = async (url: string, data: object) => {
+    return await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" },
+    });
+  };
+
+  const resetarForm = async () => {
+    setRecorrencia({
+      id_recorrencia: 0,
+      data_semana: [],
+      horario_agendamento: ["07:00"],
+      data_limite: new Date(new Date().setDate(new Date().getDate() + 7))
+        .toISOString()
+        .split("T")[0],
+      fk_id_pedido: 0,
+    });
+    setEndereco("");
+
+    // Limpar carrinho
+    localStorage.removeItem("carrinho");
+    
+    // atualizar pagina
+    await window.location.reload();
   };
 
   return (
@@ -169,11 +248,14 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
           <h3 className="font-semibold">Dias da Semana:</h3>
           <div className="grid grid-cols-2 gap-2 mt-2">
             {semana.map((day) => (
-              <label key={day.value} className="flex items-center space-x-2">
+              <label
+                key={day.value}
+                className="flex items-handleTimeChange(e, 0)center space-x-2"
+              >
                 <input
                   type="checkbox"
                   value={day.value}
-                  checked={pedido.data_semana.includes(day.value)}
+                  checked={recorrencia.data_semana.includes(day.value)}
                   onChange={handleDayChange}
                   className="form-checkbox"
                 />
@@ -185,7 +267,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
         <div className="mb-4">
           <h3 className="font-semibold">Horários:</h3>
-          {pedido.horario_agendamento.map((time, index) => (
+          {recorrencia.horario_agendamento.map((time, index) => (
             <div key={index} className="flex items-center mt-2">
               <input
                 type="time"
@@ -211,15 +293,27 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
           </button>
         </div>
 
-        <label className="block mb-4 items-center">
+        <div className="mb-4">
+          <h3 className="font-semibold">Endereço de entrega</h3>
           <input
-            type="checkbox"
-            checked={pedido.isActive}
-            onChange={handleIsActiveChange}
-            className="mr-2"
+            type="text"
+            placeholder="Endereço de entrega"
+            value={endereco}
+            onChange={(e) => setEndereco(e.target.value)}
+            className="p-2 block w-full border rounded"
           />
-          Ativo
-        </label>
+        </div>
+
+        {/* Selecionar data limite da recorrencia */}
+        <div className="mb-4">
+          <label className="block font-semibold">Data Limite:</label>
+          <input
+            type="date"
+            value={recorrencia.data_limite}
+            onChange={(e) => handleDataLimite(e)}
+            className="p-2 block w-full border rounded"
+          />
+        </div>
 
         <div className="mt-4 flex justify-between">
           <span className="text-lg font-semibold text-gray-900">
@@ -232,9 +326,12 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
         <button
           type="submit"
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          {...(btn && { disabled: true })}
+          className={`mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${
+            btn && "opacity-50 cursor-wait"
+          }`}
         >
-          Realizar pedido
+          {btnText}
         </button>
       </form>
     </div>

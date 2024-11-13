@@ -1,7 +1,7 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 interface carrinho {
-  id_cafe: number;
+  id_catalogo: number;
   nome: string;
   preco: number;
   quantidade: number;
@@ -18,12 +18,12 @@ export default function InfoCart({
   setCarrinho,
   handlebtn,
 }: InfoCartProps) {
-  const atualizarCarrinho = (id_cafe: number) => {
+  const atualizarCarrinho = (id_catalogo: number) => {
     if (setCarrinho) {
       setCarrinho(
         carrinho
           .map((i) =>
-            i.id_cafe === id_cafe ? { ...i, quantidade: i.quantidade - 1 } : i
+            i.id_catalogo === id_catalogo ? { ...i, quantidade: i.quantidade - 1 } : i
           )
           .filter((i) => i.quantidade > 0)
       );
@@ -35,7 +35,7 @@ export default function InfoCart({
       JSON.stringify(
         carrinho
           .map((i) =>
-            i.id_cafe === id_cafe ? { ...i, quantidade: i.quantidade - 1 } : i
+            i.id_catalogo === id_catalogo ? { ...i, quantidade: i.quantidade - 1 } : i
           )
           .filter((i) => i.quantidade > 0)
       )
@@ -51,13 +51,13 @@ export default function InfoCart({
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Carrinho</h2>
           <ul>
             {carrinho.map((item) => (
-              <li key={item.id_cafe} className="flex justify-between">
+              <li key={item.id_catalogo} className="flex justify-between">
                 <div className="flex gap-x-1">
                   <span>
                     {item.nome} x {item.quantidade}
                   </span>
                   <button
-                    onClick={() => atualizarCarrinho(item.id_cafe)}
+                    onClick={() => atualizarCarrinho(item.id_catalogo)}
                     className="text-red-500"
                   >
                     <TrashIcon className="h-5 w-5" />
