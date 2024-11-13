@@ -1,7 +1,5 @@
-// src/app/api/cron/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import cron from "node-cron";
-import Swiss from "@/utils/func/swiss";
 
 // Dicionário para armazenar jobs agendados por assinatura
 const jobs: Record<string, cron.ScheduledTask> = {};
@@ -21,16 +19,18 @@ export async function POST(req: NextRequest) {
     horario_agendamento,
     data_limite,
     fk_id_pedido,
-    // fk_id_notificacao,
   } = body;
 
-  const mensagem = new Swiss();
-  const msg_agendado = "Agendamento configurado com sucesso";
-  mensagem.postMessage(fk_id_pedido, msg_agendado);
-  
+  await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id_pedido: fk_id_pedido, tipo: "agendado" }),
+  });
+
   // Itera por cada horário e cria o job com a expressão cron
   horario_agendamento.forEach((horario: string) => {
-
     const [hour, minute] = horario.split(":");
 
     // Calcula o horário 30 minutos antes
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     )}`;
 
     // Cadastra o job para o agendamento específico com verificação de data_limite
-    const mainjob = cron.schedule(cronExpression, () => {
+    const mainjob = cron.schedule(cronExpression, async () => {
       const currentDate = new Date();
       const limitDate = new Date(data_limite);
 
@@ -61,15 +61,18 @@ export async function POST(req: NextRequest) {
         console.log(
           `Executando tarefa para assinatura ${id_recorrencia} do pedido ${fk_id_pedido} às ${hour}:${minute}`
         );
-        // modelo de mensagem
-        const msg = `Seu pedido ${fk_id_pedido} está a caminho!`;
-        // Enviar mensagem
-        mensagem.postMessage(fk_id_pedido, msg);
+        await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id_pedido: fk_id_pedido, tipo: "caminho" }),
+        });
       }
     });
 
     // Cadastra o job para 30 minutos antes
-    const prejob = cron.schedule(preCronExpression, () => {
+    const prejob = cron.schedule(preCronExpression, async () => {
       const currentDate = new Date();
       const limitDate = new Date(data_limite);
 
@@ -85,10 +88,13 @@ export async function POST(req: NextRequest) {
         console.log(
           `Executando tarefa para assinatura ${id_recorrencia} do pedido ${fk_id_pedido} às ${preHour}:${adjustedMinute}`
         );
-        // modelo de mensagem
-        const msg = `Seu pedido ${fk_id_pedido} está sendo preparado!`;
-        // Enviar mensagem
-        mensagem.postMessage(fk_id_pedido, msg);
+        await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id_pedido: fk_id_pedido, tipo: "preparando" }),
+        });
       }
     });
 
