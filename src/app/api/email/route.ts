@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
  const {msg, email} = await swiss.formatMessage(id_pedido, tipo);
 
  const mailOptions = {
-   from: process.env.EMAIL_FROM,
+   from: `"Café no Ponto!" <${process.env.EMAIL_FROM}>`,
    to: email,
    subject: (tipo === "agendado" ? "Agendamento de pedido" : tipo === "preparando" ? "Pedido em preparo" : "Pedido a Caminho"),
    // text: "Conteúdo do e-mail em texto",

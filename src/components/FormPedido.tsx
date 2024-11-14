@@ -184,7 +184,9 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
   const criarPedido = (id_pedido: number) => ({
     tipo: "pedido",
     id_pedido,
-    data_pedido: new Date().toISOString(),
+    data_pedido: new Date(
+      new Date().setHours(new Date().getHours() - 3)
+    ).toISOString(),
     endereco_entrega: endereco,
     valor_pedido: handleValor(carrinho),
     fk_id_cliente: user_id,
@@ -238,7 +240,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     localStorage.removeItem("carrinho");
     
     // atualizar pagina
-    await window.location.reload();
+    // await window.location.reload();
   };
 
   return (

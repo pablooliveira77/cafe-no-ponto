@@ -1,5 +1,3 @@
-// import UtilsSwiss from '@/utils/func/swiss'
-
 interface Pedido {
   id_pedido: number;
   data_pedido: string;
@@ -32,13 +30,6 @@ interface ListPedidoProps {
 }
 
 const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
-  // const { getData } = new UtilsSwiss();
-
-  // const formatarData = async (data: string) => {
-  //   const data_formatada = await getData(data)
-  //   return data_formatada
-  // }
-
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow border">
       <div className="flex justify-between items-center mb-2">
@@ -49,18 +40,23 @@ const ListPedido: React.FC<ListPedidoProps> = ({ pedido }) => {
           <strong>Valor Total:</strong> R${pedido.valor_pedido.toFixed(2)}
         </span>
       </div>
-      <div className="text-gray-600 mb-2">
-        <div className="flex justify-between items-center mb-2">
+      <div className="text-gray-600 mb-2 flex flex-col gap-2">
+        <div className="flex justify-between items-center ">
           <p>
             <strong>Endereço de Entrega:</strong> {pedido.endereco_entrega}
           </p>
           <span className="text-gray-500">
-            <strong>Data:</strong> {pedido.data_pedido}
+            <strong>Data Pedido:</strong> {pedido.data_pedido}
           </span>
         </div>
-        <p>
-          <strong>Dias de Entrega:</strong> {pedido.data_semana}
-        </p>
+        <div className="flex justify-between items-center">
+          <p>
+            <strong>Dias de Entrega:</strong> {pedido.data_semana}
+          </p>
+          <p>
+            <strong>Data Limite:</strong> {pedido.data_limite.slice(0, 10)}
+          </p>
+        </div>
         <p>
           <strong>Horários de Entrega:</strong>{" "}
           {pedido.horario_agendamento.join(", ")}
