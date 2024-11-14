@@ -75,9 +75,10 @@ const Profile: NextPage = () => {
         const pedido_json = await responsePedidos.json();
         console.log("pedidos", pedido_json);
         const pedidosTransformados = await Promise.all(
-          pedido_json.map(async (pedido: { data_pedido: string; data_semana: string[] }) => ({
+          pedido_json.map(async (pedido: { data_pedido: string; data_semana: string[]; data_limite: string }) => ({
             ...pedido,
             data_pedido: await getData(pedido.data_pedido),
+            data_limite: await getData(pedido.data_limite),
             data_semana: await getSemana(pedido.data_semana),
           }))
         );
