@@ -1,10 +1,11 @@
 class UtilsFuncSwiss {
   async getData(data_hora: string): Promise<string> {
-    //recebe data no formato "2024-10-04T08:05:00" e transforma em "04/10/2024 08:05"
+    //recebe data no formato "2024-10-04 08:05:00" e transforma em "04/10/2024 08:05"
     const data = new Date(data_hora);
     const dia = data.getDate();
     const mes = data.getMonth() + 1;
     const ano = data.getFullYear();
+    // HOra - 3 horas para ajustar ao horário de Brasília
     const hora = data.getHours();
     const minutos = data.getMinutes();
 
@@ -40,7 +41,10 @@ class UtilsFuncSwiss {
     return "Sem dias de entrega definidos";
   }
 
-  async formatMessage(id_pedido: number, mensagem: string): Promise<{ msg: string; email: string; }> {
+  async formatMessage(
+    id_pedido: number,
+    mensagem: string
+  ): Promise<{ msg: string; email: string }> {
     // Add a final return statement
     console.log("id_pedido", id_pedido, mensagem);
 
@@ -65,10 +69,9 @@ class UtilsFuncSwiss {
       return { msg: "Erro ao buscar e-mail", email: "" };
     }
 
-    const {email} = await emailResponse.json();
+    const { email } = await emailResponse.json();
 
     console.log("email", email);
-    
 
     const itensCatalogoHtml = Array.isArray(pedido.itens_catalogo)
       ? pedido.itens_catalogo
@@ -105,14 +108,23 @@ class UtilsFuncSwiss {
                 <strong>Endereço de Entrega:</strong> ${pedido.endereco_entrega}
               </p>
               <span style="color: #6B7280;">
-                <strong>Data:</strong> ${await this.getData(pedido.data_pedido)}
+                <strong>Data Pedido:</strong> ${await this.getData(
+                  pedido.data_pedido
+                )}
               </span>
             </div>
-            <p>
-              <strong>Dias de Entrega:</strong> ${await this.getSemana(
-                pedido.data_semana
-              )}
-            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <p>
+                <strong>Dias de Entrega:</strong> ${await this.getSemana(
+                  pedido.data_semana
+                )}
+              </p>
+              <p>
+                <strong>Data Limite:</strong> ${await this.getData(
+                  pedido.data_limite.slice(0, 10)
+                )}
+              </p>
+            </div>
             <p>
               <strong>Horários de Entrega:</strong> ${
                 pedido.horario_agendamento
@@ -131,18 +143,20 @@ class UtilsFuncSwiss {
       `;
 
     if (mensagem === "agendado") {
-
-      return { msg: `
+      return {
+        msg: `
       <div style="background-color: #f0f4f8; padding: 20px; border-radius: 8px; text-align: center;">
         <h1 style="font-size: 24px; color: #4CAF50; font-weight: bold;">Pedido Agendado</h1>
         <p style="font-size: 16px; color: #333;">Seu pedido foi agendado com sucesso.</p>
       </div>
       <div style="background-color: #fff; padding: 20px; border-radius: 8px;">
         ${itensPersonalizadosHtml}
-      </div>`, email: email };
+      </div>`,
+        email: email,
+      };
     }
     if (mensagem === "preparando") {
-      return { 
+      return {
         msg: `
           <div style="background-color: #f0f4f8; padding: 20px; border-radius: 8px; text-align: center;">
             <h1 style="font-size: 24px; color: #FF9800; font-weight: bold;">Pedido Preparando</h1>
@@ -151,12 +165,12 @@ class UtilsFuncSwiss {
           <div style="background-color: #fff; padding: 20px; border-radius: 8px;">
             ${itensPersonalizadosHtml}
           </div>`,
-        email: email
+        email: email,
       };
     }
 
     if (mensagem === "caminho") {
-      return { 
+      return {
         msg: `
           <div style="background-color: #f0f4f8; padding: 20px; border-radius: 8px; text-align: center;">
             <h1 style="font-size: 24px; color: #2196F3; font-weight: bold;">Pedido a Caminho</h1>
@@ -165,7 +179,7 @@ class UtilsFuncSwiss {
           <div style="background-color: #fff; padding: 20px; border-radius: 8px;">
             ${itensPersonalizadosHtml}
           </div>`,
-        email: email
+        email: email,
       };
     }
 
