@@ -21,22 +21,26 @@ export async function POST(req: NextRequest) {
     fk_id_pedido,
   } = body;
 
-  await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id_pedido: fk_id_pedido, tipo: "agendado" }),
-  });
+  // await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({ id_pedido: fk_id_pedido, tipo: "agendado" }),
+  // });
 
   // Itera por cada horário e cria o job com a expressão cron
   horario_agendamento.forEach((horario: string) => {
     const [hour, minute] = horario.split(":");
+    console.log("Agendando para", hour, minute);
+    
 
     // Calcula o horário 30 minutos antes
     const preMinute = parseInt(minute, 10) - 30;
     const preHour = preMinute < 0 ? parseInt(hour, 10) - 1 : parseInt(hour, 10);
     const adjustedMinute = (preMinute + 60) % 60;
+    console.log("Agendamento para", preHour, adjustedMinute);
+    
 
     // Cria a expressão cron para o horário e o horário 30 minutos antes
     const cronExpression = `${minute} ${hour} * * ${data_semana.join(",")}`;
@@ -59,7 +63,7 @@ export async function POST(req: NextRequest) {
         delete jobs[id_recorrencia];
       } else {
         console.log(
-          `Executando tarefa para assinatura ${id_recorrencia} do pedido ${fk_id_pedido} às ${hour}:${minute}`
+          `Pedido a caminho ${fk_id_pedido} da recorrencia ${id_recorrencia} às ${hour}:${minute}`
         );
         await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
           method: "POST",
@@ -86,7 +90,7 @@ export async function POST(req: NextRequest) {
         delete jobs[id_recorrencia];
       } else {
         console.log(
-          `Executando tarefa para assinatura ${id_recorrencia} do pedido ${fk_id_pedido} às ${preHour}:${adjustedMinute}`
+          `Pedido ${fk_id_pedido} sendo preparado, recorrencia ${id_recorrencia} às ${preHour}:${adjustedMinute}`
         );
         await fetch(process.env.AUTH0_BASE_URL + "/api/email", {
           method: "POST",

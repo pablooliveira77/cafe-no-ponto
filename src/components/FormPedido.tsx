@@ -240,7 +240,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
     localStorage.removeItem("carrinho");
     
     // atualizar pagina
-    // await window.location.reload();
+    await window.location.reload();
   };
 
   return (

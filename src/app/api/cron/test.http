@@ -7,9 +7,21 @@ Content-Type: application/json
 
 {
   "id_recorrencia": 6,
-  "data_semana": ["1", "3"],
-  "horario_agendamento": ["10:00", "03:00"],
-  "data_limite": "2023-12-01T03:00:00.000Z",
+  "data_semana": ["4"],
+  "horario_agendamento": ["17:05", "17:35"],
+  "data_limite": "2024-11-15T03:00:00.000Z",
+  "fk_id_pedido": 896
+}
+
+### POST na /api/cron
+POST https://cafe-no-ponto.vercel.app/api/cron
+Content-Type: application/json
+
+{
+  "id_recorrencia": 6,
+  "data_semana": ["4"],
+  "horario_agendamento": ["16:45"],
+  "data_limite": "2024-11-16T03:00:00.000Z",
   "fk_id_pedido": 896
 }
 
