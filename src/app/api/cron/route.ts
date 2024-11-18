@@ -103,6 +103,9 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify(cronExpression),
       });
 
+      // Esperar 1 segundo antes de enviar a próxima requisição
+      await new Promise((resolve) => setTimeout(resolve, 1000));  
+
       const responseJobPre = await fetch(`${process.env.CRON_URL}`, {
         method: "PUT",
         headers: {
