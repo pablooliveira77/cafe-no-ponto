@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
      const cronExpressionPre = {
       job: {
         title: `${id_recorrencia} - Preparando - ${preHour}:${adjustedMinute}`,
-        url: process.env.AUTH0_BASE_URL + "/api/email",
+        url: process.env.AUTH0_BASE_URL + "api/email",
         enabled: true,
         saveResponses: true,
         schedule: {
@@ -138,9 +138,10 @@ export async function POST(req: NextRequest) {
       });
   
       if (!responseJob.ok || !responseJobPre.ok) {
-        console.error("Erro:", responseJob.statusText);
+        console.error("Erro:", responseJob, responseJobPre);
       } else {
         console.log("Job agendado:", await responseJob.json());
+        console.log("PreJob agendado:", await responseJobPre.json());
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
