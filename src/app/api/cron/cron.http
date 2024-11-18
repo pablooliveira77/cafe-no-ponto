@@ -1,0 +1,45 @@
+@api = MHNfAyY2XZl5x0/Z8rt2JZguCjCqDhlr6/4cm5+sGts=
+@rota=https://api.cron-job.org/jobs
+
+@rotajob = https://cafe-no-ponto.vercel.app/api/email
+
+# GET na rota
+GET {{rota}}
+Content-Type: application/json
+Authorization: Bearer {{api}}
+
+### Get em job específico
+GET https://api.cron-job.org/jobs/5551149
+Content-Type: application/json
+Authorization: Bearer {{api}}
+
+### Criando Job
+PUT {{rota}}
+Content-Type: application/json
+Authorization: Bearer {{api}}
+
+{
+  "job": {
+    "url": "{{rotajob}}",
+    "enabled": true,
+    "saveResponses": true,
+    "schedule": {
+      "timezone": "America/Sao_Paulo",
+      "expiresAt": 20241119091000,
+      "hours": [10],
+      "mdays": [18],
+      "minutes": [30, 35],
+      "months": [-1],
+      "wdays": [-1]
+    },
+    "extendedData": {
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "{\n   \"id_pedido\": 1,\n   \"tipo\": \"pedido\"\n}"
+    },
+    "requestMethod": 1
+  }
+}
+
+
