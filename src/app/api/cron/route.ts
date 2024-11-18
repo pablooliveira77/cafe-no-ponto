@@ -1,30 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// MODELO DE DADOS
-// {
-//   "job": {
-//     "url": "{{rotajob}}",
-//     "enabled": true,
-//     "saveResponses": true,
-//     "schedule": {
-//       "timezone": "America/Sao_Paulo",
-//       "expiresAt": 20241119091000,
-//       "hours": [10],
-//       "mdays": [18],
-//       "minutes": [30, 35],
-//       "months": [-1],
-//       "wdays": [-1]
-//     },
-//     "extendedData": {
-//       "headers": {
-//         "Content-Type": "application/json"
-//       },
-//       "body": "{\n   \"id_pedido\": 1,\n   \"tipo\": \"pedido\"\n}"
-//     },
-//     "requestMethod": 1
-//   }
-// }
-
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const {
@@ -68,7 +43,7 @@ export async function POST(req: NextRequest) {
     const cronExpression = {
       job: {
         title: `${id_recorrencia} - Agendamento - ${hour}:${minute}`,
-        url: process.env.AUTH0_BASE_URL + "/api/email",
+        url: process.env.AUTH0_BASE_URL + "api/email",
         enabled: true,
         saveResponses: true,
         schedule: {
