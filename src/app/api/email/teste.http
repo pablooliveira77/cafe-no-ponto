@@ -1,0 +1,8 @@
+### Requisição de enviar email
+POST http://localhost:3000/api/email
+Content-Type: application/json
+
+{
+   "id_pedido": 1,
+   "tipo": "pedido"
+}

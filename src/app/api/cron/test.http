@@ -14,14 +14,14 @@ Content-Type: application/json
 }
 
 ### POST na /api/cron
-POST https://cafe-no-ponto.vercel.app/api/cron
+POST http://localhost:3000/api/cron
 Content-Type: application/json
 
 {
   "id_recorrencia": 6,
-  "data_semana": ["4"],
-  "horario_agendamento": ["16:45"],
-  "data_limite": "2024-11-16T03:00:00.000Z",
+  "data_semana": ["1", "5"],
+  "horario_agendamento": ["15:00", "15:05"],
+  "data_limite": "2024-11-27T03:00:00.000Z",
   "fk_id_pedido": 896
 }
 
