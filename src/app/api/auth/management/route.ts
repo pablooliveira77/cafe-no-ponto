@@ -56,12 +56,12 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
 
     const user_data = {
-      user_id: data.user_id,
-      username: data.username,
+      id_pessoa: data.user_id,
+      nome: data.username,
       email: data.email,
-      picture: data.picture,
-      phone_number: data.phone_number,
-      tipo_cargo: data.user_metadata?.tipo_cargo || 'cliente',
+      // picture: data.picture,
+      numero: data.phone_number,
+      tipo: data.user_metadata?.tipo_cargo || 'cliente',
     };
 
     return NextResponse.json(user_data);
