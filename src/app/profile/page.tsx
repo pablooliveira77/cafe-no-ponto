@@ -46,7 +46,7 @@ const Profile: NextPage = () => {
   const { user, error, isLoading } = useUser();
   const [userData, setUserData] = useState<UserMetadata | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  
+
   useEffect(() => {
     const metadata = async () => {
       const { getData, getSemana } = new UtilsSwiss();
@@ -59,12 +59,45 @@ const Profile: NextPage = () => {
         const user_data = await response.json();
         console.log("usuário", user_data);
 
+        // Validar no banco de dados
+        const responseUser = await fetch(`/api/pessoa?id=${user_data.id_pessoa}`);
+        if (!responseUser.ok) {
+          console.error("Failed to fetch user data");
+          return;
+        }
+        const pessoa_json = await responseUser.json();
+        console.log("pessoa", pessoa_json);
+
+        if (pessoa_json === null) {
+          console.error("Usuário não encontrado no banco de dados");
+          const responseCreate = await fetch(`/api/pessoa`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id_pessoa: user_data.id_pessoa,
+              nome: user_data.nome,
+              email: user_data.email,
+              numero: user_data.numero,
+              tipo: user_data.tipo,
+            }),
+          });
+
+          if (!responseCreate.ok) {
+            console.error("Failed to create user data");
+            return;
+          }
+
+          console.log("Usuário criado com sucesso");
+        }
+
         setUserData({
-          id_pessoa: user_data.user_id,
-          nome: user_data.username,
+          id_pessoa: user_data.id_pessoa,
+          nome: user_data.nome,
           email: user_data.email,
-          numero: user_data.phone_number,
-          tipo: user_data.tipo_cargo,
+          numero: user_data.numero,
+          tipo: user_data.tipo,
         });
 
         const responsePedidos = await fetch(`/api/pedido`);
@@ -75,14 +108,20 @@ const Profile: NextPage = () => {
         const pedido_json = await responsePedidos.json();
         console.log("pedidos", pedido_json);
         const pedidosTransformados = await Promise.all(
-          pedido_json.map(async (pedido: { data_pedido: string; data_semana: string[]; data_limite: string }) => ({
-            ...pedido,
-            data_pedido: await getData(pedido.data_pedido),
-            data_limite: await getData(pedido.data_limite),
-            data_semana: await getSemana(pedido.data_semana),
-          }))
+          pedido_json.map(
+            async (pedido: {
+              data_pedido: string;
+              data_semana: string[];
+              data_limite: string;
+            }) => ({
+              ...pedido,
+              data_pedido: await getData(pedido.data_pedido),
+              data_limite: await getData(pedido.data_limite),
+              data_semana: await getSemana(pedido.data_semana),
+            })
+          )
         );
-    
+
         setPedidos(pedidosTransformados);
       }
     };
