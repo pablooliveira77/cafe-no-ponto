@@ -185,6 +185,49 @@ class UtilsFuncSwiss {
 
     return { msg: "Deu erro na mensagem", email: "" };
   }
+
+  async createCliente(user_data: {
+    id_pessoa: string;
+    nome: string;
+    email: string;
+    numero: string;
+    tipo: string;
+  }): Promise<void> {
+    const responseUser = await fetch(`/api/pessoa?id=${user_data.id_pessoa}`);
+    if (!responseUser.ok) {
+      console.error("Falhou ao buscar usuário no banco de dados");
+      return;
+    }
+    const pessoa_json = await responseUser.json();
+
+    if (pessoa_json === null) {
+      console.log("Usuário não encontrado no banco de dados");
+      const responseCreate = await fetch(`/api/pessoa`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_pessoa: user_data.id_pessoa,
+          nome: user_data.nome,
+          email: user_data.email,
+          numero: user_data.numero,
+          tipo: user_data.tipo,
+        }),
+      });
+
+      if (!responseCreate.ok) {
+        console.error("Failed to create user data");
+        return;
+      }
+
+      console.log("Usuário criado com sucesso");
+      return await responseCreate.json();
+    } else {
+      console.log("Usuário já cadastrado no banco de dados");
+      return pessoa_json;
+    }
+  }
 }
 
 export default UtilsFuncSwiss;

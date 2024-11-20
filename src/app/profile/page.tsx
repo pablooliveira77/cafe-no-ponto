@@ -49,7 +49,7 @@ const Profile: NextPage = () => {
 
   useEffect(() => {
     const metadata = async () => {
-      const { getData, getSemana } = new UtilsSwiss();
+      const { getData, getSemana, createCliente } = new UtilsSwiss();
       if (user) {
         const response = await fetch(`/api/auth/management?userId=${user.sub}`);
         if (!response.ok) {
@@ -57,40 +57,12 @@ const Profile: NextPage = () => {
           return;
         }
         const user_data = await response.json();
-        console.log("usuário", user_data);
+        // console.log("usuário", user_data);
 
         // Validar no banco de dados
-        const responseUser = await fetch(`/api/pessoa?id=${user_data.id_pessoa}`);
-        if (!responseUser.ok) {
-          console.error("Failed to fetch user data");
-          return;
-        }
-        const pessoa_json = await responseUser.json();
-        console.log("pessoa", pessoa_json);
-
-        if (pessoa_json === null) {
-          console.error("Usuário não encontrado no banco de dados");
-          const responseCreate = await fetch(`/api/pessoa`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              id_pessoa: user_data.id_pessoa,
-              nome: user_data.nome,
-              email: user_data.email,
-              numero: user_data.numero,
-              tipo: user_data.tipo,
-            }),
-          });
-
-          if (!responseCreate.ok) {
-            console.error("Failed to create user data");
-            return;
-          }
-
-          console.log("Usuário criado com sucesso");
-        }
+        const create_client = await createCliente(user_data);
+        console.log("Cliente", create_client);
+        
 
         setUserData({
           id_pessoa: user_data.id_pessoa,
@@ -100,13 +72,13 @@ const Profile: NextPage = () => {
           tipo: user_data.tipo,
         });
 
-        const responsePedidos = await fetch(`/api/pedido`);
+        const responsePedidos = await fetch(`/api/pedido?id_pessoa=${user_data.id_pessoa}`);
+        
         if (!responsePedidos.ok) {
           console.error("Failed to fetch pedidos");
           return;
         }
         const pedido_json = await responsePedidos.json();
-        console.log("pedidos", pedido_json);
         const pedidosTransformados = await Promise.all(
           pedido_json.map(
             async (pedido: {
@@ -174,7 +146,7 @@ const Profile: NextPage = () => {
             <h4 className="text-gray-600">Seus pedidos</h4>
             <div className="">
               {pedidos
-                .filter((item) => item.fk_id_cliente === userData?.id_pessoa)
+                // .filter((item) => item.fk_id_cliente === userData?.id_pessoa)
                 // Ordenar por data_pedido ao contrário
                 .sort((a, b) => (a.data_pedido > b.data_pedido ? -1 : 1))
                 .map((item) => (
