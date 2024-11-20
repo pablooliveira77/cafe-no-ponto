@@ -6,6 +6,11 @@ export interface Pessoa {
   tipo: string;
 }
 
+export interface Cliente {
+  id_cliente: string;
+  fk_id_pessoa: string;
+}
+
 export interface Pedido {
   id_pedido: number;
   data_pedido: string;

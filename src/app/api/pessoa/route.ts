@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Crud from "@/utils/postgres/crud";
-import { Pessoa } from "@/utils/postgres/types";
+import { Pessoa, Cliente } from "@/utils/postgres/types";
 
 const pessoaCrud = new Crud<Pessoa>("pessoa", "id_pessoa");
+const clienteCrud = new Crud<Cliente>("cliente", "id_cliente");
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -25,7 +26,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const newPessoa = await pessoaCrud.create(body);
-    return NextResponse.json(newPessoa, { status: 201 });
+    const newCliente = await clienteCrud.create({ fk_id_pessoa: newPessoa.id_pessoa, id_cliente: newPessoa.id_pessoa });
+    return NextResponse.json({newPessoa, newCliente}, { status: 201 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: error }, { status: 400 });
