@@ -238,6 +238,9 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
 
     // Limpar carrinho
     localStorage.removeItem("carrinho");
+
+    // Alerta de sucesso
+    alert("Pedido realizado com sucesso!");
     
     // atualizar pagina
     await window.location.reload();
