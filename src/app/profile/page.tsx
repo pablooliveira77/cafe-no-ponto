@@ -57,12 +57,10 @@ const Profile: NextPage = () => {
           return;
         }
         const user_data = await response.json();
-        // console.log("usuário", user_data);
 
         // Validar no banco de dados
         const create_client = await createCliente(user_data);
         console.log("Cliente", create_client);
-        
 
         setUserData({
           id_pessoa: user_data.id_pessoa,
@@ -72,8 +70,10 @@ const Profile: NextPage = () => {
           tipo: user_data.tipo,
         });
 
-        const responsePedidos = await fetch(`/api/pedido?id_pessoa=${user_data.id_pessoa}`);
-        
+        const responsePedidos = await fetch(
+          `/api/pedido?id_pessoa=${user_data.id_pessoa}`
+        );
+
         if (!responsePedidos.ok) {
           console.error("Failed to fetch pedidos");
           return;
@@ -122,7 +122,7 @@ const Profile: NextPage = () => {
             height={96}
             className="rounded-full border border-gray-200"
           />
-          <div>
+          <div className="text-black">
             <span className="bg-slate-200 text-xs p-0.5 rounded-sm">
               Id: {userData?.id_pessoa}
             </span>
@@ -142,11 +142,9 @@ const Profile: NextPage = () => {
         </h3>
         {userData?.tipo === "cliente" && (
           <div>
-            {/* filtrar fk_id_cliente = userData?.id_pessoa */}
             <h4 className="text-gray-600">Seus pedidos</h4>
             <div className="">
               {pedidos
-                // .filter((item) => item.fk_id_cliente === userData?.id_pessoa)
                 // Ordenar por data_pedido ao contrário
                 .sort((a, b) => (a.data_pedido > b.data_pedido ? -1 : 1))
                 .map((item) => (
@@ -160,55 +158,6 @@ const Profile: NextPage = () => {
             </div>
           </div>
         )}
-        {userData?.tipo === "admin" && (
-          <div>
-            <h4 className="text-gray-600">Todos os pedidos</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedidos.map((item) => (
-                <ListPedido
-                  key={item.id_pedido}
-                  pedido={{
-                    ...item,
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-        {/* {userData?.tipo === "barman" && (
-          <div>
-            <h4 className="text-gray-600">Seus agendamentos</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedidos
-                .filter((item) => item.fk_id_barman === userData?.id_pessoa)
-                .map((item) => (
-                  <ListPedido
-                    key={item.id_pedido}
-                    pedido={{
-                      ...item,
-                    }}
-                  />
-                ))}
-            </div>
-          </div>
-        )} */}
-        {/* {userData?.tipo === "entregador" && (
-          <div>
-            <h4 className="text-gray-600">Seus agendamentos</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {pedidos
-                .filter((item) => item.fk_id_entregador === userData?.id_pessoa)
-                .map((item) => (
-                  <ListPedido
-                    key={item.id_pedido}
-                    pedido={{
-                      ...item,
-                    }}
-                  />
-                ))}
-            </div>
-          </div>
-        )} */}
       </div>
     </div>
   );

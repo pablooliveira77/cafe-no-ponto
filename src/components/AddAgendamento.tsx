@@ -63,8 +63,8 @@ const AgendamentoForm: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="p-4  mx-auto bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4">Informações do Pedido</h2>
+    <div className="p-4 mx-auto bg-white rounded-lg shadow-lg text-black">
+      <h2 className="text-2xl font-semibold mb-4 ">Informações do Pedido</h2>
 
       <div className="p-4 text-center mb-6 border-b-2">
         <InfoCart carrinho={carrinho} />
