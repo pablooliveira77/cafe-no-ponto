@@ -152,7 +152,7 @@ export default function Home() {
                 {catalogo.length > 0 ? (
                   <div>
                     {/* Exibir o carrinho ou informações do carrinho */}
-                    <div className="bg-white p-4 rounded shadow-md text-center mb-6">
+                    <div className="bg-white text-black p-4 rounded shadow-md text-center mb-6">
                       <InfoCart
                         carrinho={carrinho}
                         setCarrinho={setCarrinho}

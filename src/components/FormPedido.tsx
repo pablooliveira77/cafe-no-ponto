@@ -278,7 +278,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
                 type="time"
                 value={time}
                 onChange={(e) => handleTimeChange(e, index)}
-                className="p-2 block w-full border rounded"
+                className="p-2 block w-full border rounded dark:text-white"
               />
               <button
                 type="button"
@@ -305,7 +305,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
             placeholder="Endereço de entrega"
             value={endereco}
             onChange={(e) => setEndereco(e.target.value)}
-            className="p-2 block w-full border rounded"
+            className="p-2 block w-full border rounded dark:text-white"
           />
         </div>
 
@@ -316,7 +316,7 @@ export default function FormPedido({ carrinho, user_id }: FormPedidoProps) {
             type="date"
             value={recorrencia.data_limite}
             onChange={(e) => handleDataLimite(e)}
-            className="p-2 block w-full border rounded"
+            className="p-2 block w-full border rounded dark:text-white"
           />
         </div>
 
