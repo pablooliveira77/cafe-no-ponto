@@ -152,7 +152,7 @@ export default function Home() {
                 {catalogo.length > 0 ? (
                   <div>
                     {/* Exibir o carrinho ou informações do carrinho */}
-                    <div className="bg-white p-4 rounded shadow-md text-center mb-6">
+                    <div className="bg-white text-black p-4 rounded shadow-md text-center mb-6">
                       <InfoCart
                         carrinho={carrinho}
                         setCarrinho={setCarrinho}
@@ -160,7 +160,7 @@ export default function Home() {
                       />
                     </div>
 
-                    <div id="cardapio" className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="cardapio" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
                       {catalogo.map((item) => (
                         <ProductsInitial
                           key={item.id_catalogo}

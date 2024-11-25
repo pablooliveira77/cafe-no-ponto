@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const {
-    id_recorrencia,
     data_semana,
     horario_agendamento,
     data_limite,
@@ -42,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     const cronExpression = {
       job: {
-        title: `${id_recorrencia} - Agendamento - ${hour}:${minute}`,
+        title: `${fk_id_pedido} - Agendamento - ${hour}:${minute}`,
         url: process.env.AUTH0_BASE_URL + "api/email",
         enabled: true,
         saveResponses: true,
@@ -70,7 +69,7 @@ export async function POST(req: NextRequest) {
     
      const cronExpressionPre = {
       job: {
-        title: `${id_recorrencia} - Preparando - ${preHour}:${adjustedMinute}`,
+        title: `${fk_id_pedido} - Preparando - ${preHour}:${adjustedMinute}`,
         url: process.env.AUTH0_BASE_URL + "api/email",
         enabled: true,
         saveResponses: true,
