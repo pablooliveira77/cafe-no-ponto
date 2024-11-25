@@ -114,7 +114,7 @@ const Profile: NextPage = () => {
       {isLoading && userData?.tipo === "" ? (
         <p className="text-gray-600">Carregando informações do usuário...</p>
       ) : (
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-center space-x-4">
           <Image
             src="/perfil.jpeg"
             alt="Imagem de perfil"
